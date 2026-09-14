@@ -1,0 +1,45 @@
+{
+  "seat": "opus",
+  "model_requested": "anthropic/claude-opus-5",
+  "http": "200",
+  "curl_rc": 0,
+  "latency_s": 9.57,
+  "ok": true,
+  "model_served": "anthropic/claude-opus-5",
+  "provider": "Claude Platform on AWS",
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 16342,
+    "completion_tokens": 446,
+    "total_tokens": 16788,
+    "cost": 0.11286,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.11286,
+      "upstream_inference_prompt_cost": 0.08171,
+      "upstream_inference_completions_cost": 0.01115
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 22,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    },
+    "server_tool_use_details": {
+      "web_search_requests": 2
+    }
+  },
+  "gen_id": "gen-1789421166-zXHEZjnUbNOafuimv2fC",
+  "citations": [
+    "https://www.justsecurity.org/157154/early-edition-september-14-2026/",
+    "https://www.justsecurity.org/157154/early-edition-september-14-2026/",
+    "https://www.npr.org/2026/09/14/nx-s1-5965810/morning-news-brief",
+    "https://www.democracynow.org/2026/9/14/headlines"
+  ],
+  "chars": 733
+}

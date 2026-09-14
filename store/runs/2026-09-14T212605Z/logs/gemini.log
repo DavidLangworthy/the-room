@@ -1,0 +1,4 @@
+[2026-09-14T21:26:06Z] seat=gemini model=google/gemini-3.1-pro-preview start
+[2026-09-14T21:26:17Z] seat=gemini http=504 curl_rc=0 status=1
+[2026-09-14T21:27:02Z] seat=gemini model=google/gemini-3.1-pro-preview start
+[2026-09-14T21:27:16Z] seat=gemini http=200 curl_rc=0 status=0

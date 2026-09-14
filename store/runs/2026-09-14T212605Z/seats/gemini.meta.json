@@ -1,0 +1,43 @@
+{
+  "seat": "gemini",
+  "model_requested": "google/gemini-3.1-pro-preview",
+  "http": "200",
+  "curl_rc": 0,
+  "latency_s": 13.7,
+  "ok": true,
+  "model_served": "google/gemini-3.1-pro-preview",
+  "provider": "Google",
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 10,
+    "completion_tokens": 1186,
+    "total_tokens": 1196,
+    "cost": 0.028252,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.028252,
+      "upstream_inference_prompt_cost": 2e-05,
+      "upstream_inference_completions_cost": 0.014232
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 1103,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    },
+    "server_tool_use_details": {
+      "web_search_requests": 1
+    }
+  },
+  "gen_id": "gen-1789421223-OoIXaqZx3FdCEUV2dx84",
+  "citations": [
+    "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE1ZA6ee9YqJpT2e4YpdPV40GdHw3XvYErAXkk7MssgN4LJYgmcVQ6Qgnn31yMTXB5K87XfYr8S8kZWaJEJpKuURg8uPJEy7dgMb2B5Q5-l1AqJxMuMbNQ68zv2uD7JySANeA5zaHOq",
+    "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFnTYs7a-Hwk_jxbQmLWSteHnUYb2k7PZxYr-Re2qEc6_wNdkHxf2k42a6KinYjZdqMB1W0zimwLfXk07ChuD5fYvYY8zoRR2ZHqnW6opznmrPS-rCy8HBOToc_HJ-E6x2jTXXE"
+  ],
+  "chars": 472
+}
