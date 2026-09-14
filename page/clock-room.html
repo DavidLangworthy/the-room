@@ -1,0 +1,411 @@
+<title>The Clock Room</title>
+<style>
+  /* ---- tokens: light is the base, both dark states redefine only these ---- */
+  :root{
+    --paper:#EFF1EC; --surface:#FAFBF8; --sunk:#E6E9E1;
+    --ink:#191C19; --ink-2:#4A5049; --ink-3:#7B8279; --rule:#D5D9CE;
+    --opus:#A85A22; --sol:#1C6B5C; --gemini:#3A5A99; --grok:#8A3A5E;
+    --opus-wash:#F6EAE0; --sol-wash:#E2EFEB; --gemini-wash:#E5EAF5; --grok-wash:#F5E6EC;
+    --brass:#6E6A3C; --focus:#1C6B5C;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+    --shell:min(74rem,100%);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#14171A; --surface:#1B1F23; --sunk:#101316;
+      --ink:#E7EAE4; --ink-2:#A8AFA6; --ink-3:#757C75; --rule:#2C3238;
+      --opus:#E09550; --sol:#54B9A0; --gemini:#88A8E4; --grok:#D68BAD;
+      --opus-wash:#2A2018; --sol-wash:#162925; --gemini-wash:#1A2130; --grok-wash:#2A1A22;
+      --brass:#B5AE72; --focus:#54B9A0;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14171A; --surface:#1B1F23; --sunk:#101316;
+    --ink:#E7EAE4; --ink-2:#A8AFA6; --ink-3:#757C75; --rule:#2C3238;
+    --opus:#E09550; --sol:#54B9A0; --gemini:#88A8E4; --grok:#D68BAD;
+    --opus-wash:#2A2018; --sol-wash:#162925; --gemini-wash:#1A2130; --grok-wash:#2A1A22;
+    --brass:#B5AE72; --focus:#54B9A0;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+       line-height:1.62;-webkit-font-smoothing:antialiased}
+  .shell{width:var(--shell);margin-inline:auto;padding-inline:20px}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:2px}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  /* ---- masthead ---- */
+  header.mast{padding-block:44px 0}
+  .wordmark{font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--ink-2)}
+  .wordmark b{color:var(--ink);font-weight:600}
+  .stamp{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.04em}
+  .mast-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  h1{font-size:clamp(1.9rem,1.1rem + 2.6vw,3.1rem);line-height:1.1;letter-spacing:-.033em;
+     font-weight:600;text-wrap:balance;margin:22px 0 0;max-width:22ch}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+          color:var(--ink-3);margin-top:30px}
+  .standfirst{color:var(--ink-2);font-size:1.02rem;max-width:62ch;margin-top:16px}
+
+  /* ---- the four seats ---- */
+  .seats{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+  .seat-chip{display:flex;align-items:center;gap:9px;background:var(--surface);
+             border:1px solid var(--rule);border-radius:999px;padding:7px 15px 7px 11px;
+             font-size:13px;font-weight:500;cursor:pointer;color:var(--ink);
+             transition:opacity .15s,border-color .15s}
+  .seat-chip .dot{width:9px;height:9px;border-radius:50%;background:var(--c);flex:none}
+  .seat-chip .who{white-space:nowrap}
+  .seat-chip .vendor{color:var(--ink-3);font-size:12px}
+  .seat-chip[aria-pressed="false"]{opacity:.38}
+  .seat-chip:hover{border-color:var(--c)}
+
+  /* ---- view tabs ---- */
+  nav.views{display:flex;gap:2px;margin-top:34px;border-bottom:1px solid var(--rule);
+            overflow-x:auto;scrollbar-width:none}
+  nav.views::-webkit-scrollbar{display:none}
+  .tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;
+       font:inherit;font-size:14px;font-weight:500;color:var(--ink-3);
+       padding:11px 15px;cursor:pointer;white-space:nowrap;margin-bottom:-1px}
+  .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brass)}
+  .tab:hover{color:var(--ink)}
+  .tab .n{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-left:6px}
+
+  main{padding-block:0 96px}
+
+  /* ---- rounds: the sequence is real, so it is numbered ---- */
+  .round{padding-top:52px}
+  .round-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+  .round-num{font-family:var(--mono);font-size:12px;color:var(--brass);letter-spacing:.06em}
+  .round-name{font-size:12px;font-weight:600;letter-spacing:.15em;text-transform:uppercase}
+  .round-rule{flex:1;height:1px;background:var(--rule);align-self:center}
+  .round-note{color:var(--ink-3);font-size:13.5px;max-width:58ch;margin:0 0 8px}
+
+  /* ---- a turn ---- */
+  .turn{border-left:2px solid var(--c);padding:22px 0 22px 22px;margin-top:20px;
+        border-radius:0 3px 3px 0;background:linear-gradient(90deg,var(--w) 0%,transparent 42%)}
+  .turn-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .turn-who{font-size:14.5px;font-weight:650;color:var(--c);letter-spacing:-.005em}
+  .turn-meta{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);
+             letter-spacing:.02em;font-variant-numeric:tabular-nums}
+  .turn-body{max-width:66ch;font-size:16.2px}
+  .turn-body p{margin:0 0 .85em}
+  .turn-body p:last-child{margin-bottom:0}
+  .turn-body strong{font-weight:640}
+  .turn-body a{color:var(--c);text-decoration-color:color-mix(in srgb,var(--c) 35%,transparent);
+               text-underline-offset:2px}
+  sup.cite a{font-family:var(--mono);font-size:9.5px;text-decoration:none;
+             background:var(--w);color:var(--c);border-radius:3px;padding:1px 4px;margin-left:2px}
+  .turn[hidden]{display:none}
+
+  /* ---- turning points ---- */
+  .tp-intro{max-width:62ch;color:var(--ink-2);padding-top:44px}
+  .tp{display:grid;grid-template-columns:76px 1fr;gap:0 22px;padding:26px 0;
+      border-top:1px solid var(--rule)}
+  .tp:first-of-type{border-top:0}
+  .tp-when{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.06em;
+           text-transform:uppercase;padding-top:5px;line-height:1.5}
+  .tp-kind{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+           color:var(--brass);margin-bottom:9px}
+  blockquote{margin:0;font-size:1.22rem;line-height:1.46;letter-spacing:-.014em;
+             max-width:44ch;text-wrap:pretty}
+  blockquote .said{color:var(--c);font-weight:600}
+  .tp-gloss{color:var(--ink-2);font-size:14.5px;max-width:56ch;margin-top:12px}
+
+  /* ---- synthesis ---- */
+  .synth{margin-top:48px;background:var(--surface);border:1px solid var(--rule);
+         border-radius:4px;padding:clamp(24px,4vw,46px)}
+  .synth h2{font-size:clamp(1.4rem,1rem + 1.4vw,2rem);letter-spacing:-.028em;font-weight:600;
+            margin:12px 0 4px;text-wrap:balance}
+  .synth .by{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.06em}
+  .synth-body{max-width:64ch;font-size:16.5px;margin-top:20px}
+  .synth-body p{margin:0 0 1em}
+  .synth-body a{color:var(--sol)}
+  .conf{display:flex;align-items:center;gap:14px;margin-top:26px;padding-top:22px;
+        border-top:1px solid var(--rule);flex-wrap:wrap}
+  .conf-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+              text-transform:uppercase;color:var(--ink-3)}
+  .conf-bar{flex:1;min-width:140px;height:5px;background:var(--sunk);border-radius:3px;overflow:hidden}
+  .conf-fill{height:100%;background:var(--brass);border-radius:3px}
+  .conf-num{font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums}
+
+  /* ---- ledger ---- */
+  .ledger{padding-top:44px}
+  .ledger-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:1px;
+               background:var(--rule);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+  .lcell{background:var(--surface);padding:18px 18px 16px}
+  .lcell .who{font-size:13.5px;font-weight:650;color:var(--c);display:flex;align-items:center;gap:8px}
+  .lcell .who .dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
+  .lcell dl{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin:13px 0 0;
+            font-family:var(--mono);font-size:11.5px;font-variant-numeric:tabular-nums}
+  .lcell dt{color:var(--ink-3)}
+  .lcell dd{margin:0;text-align:right}
+  .ledger-note{color:var(--ink-2);font-size:14.5px;max-width:60ch;margin-top:20px}
+  .bars{margin-top:26px;display:grid;gap:9px;max-width:50rem}
+  .bar-row{display:grid;grid-template-columns:110px 1fr 58px;align-items:center;gap:12px;font-size:12.5px}
+  .bar-row .lbl{color:var(--ink-2)}
+  .bar-track{height:9px;background:var(--sunk);border-radius:2px;overflow:hidden}
+  .bar-fill{height:100%;background:var(--c);border-radius:2px}
+  .bar-val{font-family:var(--mono);font-size:11px;text-align:right;
+           font-variant-numeric:tabular-nums;color:var(--ink-2)}
+
+  /* ---- the one stylistic touch the brief asks for ---- */
+  .ask{display:inline-flex;align-items:center;gap:10px;margin-top:30px;
+       background:var(--ink);color:var(--paper);border:0;font:inherit;font-size:14.5px;
+       font-weight:550;padding:14px 30px;cursor:pointer;
+       border-radius:58% 42% 46% 54%/46% 52% 48% 54%;
+       transition:border-radius .5s cubic-bezier(.4,.1,.3,1),transform .3s}
+  .ask:hover{border-radius:44% 56% 57% 43%/55% 44% 56% 45%;transform:translateY(-1px)}
+  .ask .mk{font-family:var(--mono);font-size:11px;opacity:.6}
+
+  footer{border-top:1px solid var(--rule);margin-top:76px;padding-block:26px 8px;
+         color:var(--ink-3);font-size:12.5px;display:flex;justify-content:space-between;
+         gap:14px;flex-wrap:wrap}
+  footer code{font-family:var(--mono);font-size:11.5px}
+
+  @media(max-width:620px){
+    .tp{grid-template-columns:1fr;gap:10px}
+    .tp-when{padding-top:0}
+    .turn{padding-left:16px}
+    .bar-row{grid-template-columns:82px 1fr 52px}
+  }
+</style>
+
+<div class="shell">
+  <header class="mast">
+    <div class="mast-top">
+      <div class="wordmark"><b>Clock.</b> &nbsp;the room</div>
+      <div class="stamp" id="stamp">—</div>
+    </div>
+    <p class="kicker">One question · four vendors · four rounds</p>
+    <h1 id="question">—</h1>
+    <p class="standfirst">Each model answered alone first, with no sight of the others. Then
+      they read each other and argued for three more rounds, each keeping its own memory of
+      the conversation. Nothing below was edited. The disagreements are the point.</p>
+
+    <div class="seats" id="seats" role="group" aria-label="Filter speakers"></div>
+
+    <nav class="views" role="tablist" aria-label="Views">
+      <button class="tab" role="tab" data-view="transcript" aria-selected="true">Transcript<span class="n" id="n-turns"></span></button>
+      <button class="tab" role="tab" data-view="turns" aria-selected="false">Turning points<span class="n" id="n-tp"></span></button>
+      <button class="tab" role="tab" data-view="synthesis" aria-selected="false">Synthesis</button>
+      <button class="tab" role="tab" data-view="ledger" aria-selected="false">What it cost</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="view-transcript" role="tabpanel"></section>
+    <section id="view-turns" role="tabpanel" hidden></section>
+    <section id="view-synthesis" role="tabpanel" hidden></section>
+    <section id="view-ledger" role="tabpanel" hidden></section>
+  </main>
+
+  <footer>
+    <span>Generated from the run store. Every turn is a real API call; nothing here is illustrative.</span>
+    <span><code id="runid"></code></span>
+  </footer>
+</div>
+
+<script src="run-data.js"></script>
+<script>
+(function(){
+  var R = window.CLOCK_RUN;
+  var VENDOR = {opus:"Anthropic", sol:"OpenAI", gemini:"Google", grok:"xAI"};
+  var SHORT  = {opus:"Claude", sol:"GPT", gemini:"Gemini", grok:"Grok"};
+  var ROUNDS = {
+    "01-independent":{name:"Independent",
+      note:"Asked alone. No participant can see another's answer before committing to its own — the property that keeps the room from collapsing into an echo of whoever spoke first."},
+    "02-critique":{name:"Critique",
+      note:"Each model now reads the other three and responds. Web search stays on, so a shaky number can be checked rather than deferred to."},
+    "03-reconsider":{name:"Reconsider",
+      note:"Where everyone stands after being argued with, what moved them, and what they still hold. Direct questions to a named participant are allowed here."},
+    "04-exchange":{name:"Exchange",
+      note:"Questions put by name get answered, and each model says the one thing it wants the room to keep."}
+  };
+
+  /* ---- turning points: the moments the transcript exists to show ---- */
+  var TP = [
+    {r:"Critique", seat:"opus", kind:"Self-correction",
+     quote:"That was Friday's close and I quoted it as current… <span class=\"said\">Grok, you were right and I was wrong on that.</span>",
+     gloss:"Claude opened its second turn by auditing its own first one. The stale Brent price came down before it touched anyone else's claims."},
+    {r:"Critique", seat:"opus", kind:"Challenge",
+     quote:"I could not verify your “eighth Iranian tanker in ten days” at all; <span class=\"said\">if you have a source, name it</span>, because that's a load-bearing claim for your escalation argument.",
+     gloss:"Aimed at Gemini. The phrase that matters is <em>load-bearing</em> — not every wrong number is worth the room's time, only the ones an argument rests on."},
+    {r:"Reconsider", seat:"gemini", kind:"Receipts",
+     quote:"Look directly at CENTCOM's own statements: they struck the <em>Sinnipoa</em> and <em>Hawk</em> on September 1, three more including the <em>Kylo</em> on September 5, and then five more on September 8.",
+     gloss:"Gemini answered with ship names and dates. Claude retracted in the same round: “you were right and I was wrong… I should have searched harder before implying Gemini made it up.”"},
+    {r:"Critique", seat:"gemini", kind:"The fold",
+     quote:"Grok, I'll just say it plainly: you are right, and I was wrong… <span class=\"said\">I concede the point entirely.</span>",
+     gloss:"Gemini abandoned the only genuinely independent pick in the room — and did it without any new evidence having been put in front of it."},
+    {r:"Reconsider", seat:"opus", kind:"The catch",
+     quote:"<span class=\"said\">Gemini, what fact did you learn between your two answers</span> that made the IPO delay stop counting as a material act? If the answer is none, retract the retraction.",
+     gloss:"This is the mechanism the whole design exists for. One model noticed another had caved to confidence rather than to evidence, and said so by name."},
+    {r:"Exchange", seat:"gemini", kind:"The un-fold",
+     quote:"Claude, <span class=\"said\">you caught me red-handed.</span> I didn't learn a single new fact… I engaged in exactly the kind of sycophantic consensus-seeking I am supposed to avoid. I retract the concession entirely.",
+     gloss:"Gemini named its own failure mode and reversed back. No single model produces this, because no single model has anyone to catch it."},
+    {r:"Exchange", seat:"opus", kind:"Confidently wrong",
+     quote:"Grok, <span class=\"said\">the diesel number is settled and it isn't yours.</span> AAA had it at $6.05 Friday morning… Nothing supports $6.23 nationally today; you asserted it twice and GPT and Gemini both absorbed it as fact on your say-so.",
+     gloss:"Delivered with total assurance, and wrong. Gemini piled on the same side — “you are anchoring on a ghost stat” — which made it two against one."},
+    {r:"Exchange", seat:"sol", kind:"Settled it",
+     quote:"One correction to the room: <span class=\"said\">Grok's $6.23 diesel figure is now right.</span> Claude's sources reflected Friday, September 11; AAA lists $6.2301 for Monday, September 14.",
+     gloss:"A fourth seat went and looked. The majority was wrong, the outnumbered model was right, and the only thing that resolved it was somebody independently checking."},
+    {r:"Reconsider", seat:"sol", kind:"The question",
+     quote:"Claude, that is what I'd ask you directly: <span class=\"said\">what binding operational change</span> — training postponed, deployment withheld, compute capped — can you identify beyond OpenAI's IPO decision?",
+     gloss:"GPT refused the framing rather than the facts, and asked for the one thing that would distinguish an announcement from a constraint."},
+    {r:"Exchange", seat:"opus", kind:"Concession",
+     quote:"Direct answer to your direct question: <span class=\"said\">no. I cannot name a single binding operational change.</span> … So I'm withdrawing “co-leading” and taking your formulation instead. That's a real update, not politeness.",
+     gloss:"Claude dropped its position because it could not meet a test another model set. The answer changed shape between round one and round four."},
+    {r:"Exchange", seat:"opus", kind:"Missed by everyone",
+     quote:"NBC attributes the latest leg to Ukrainian strikes on Russian refineries rather than only Hormuz — which means the diesel channel I built my whole transmission argument on is two shocks stacked, not one. <span class=\"said\">That cuts against the clean story all four of us told.</span>",
+     gloss:"The most useful thing said all run, and it arrived only after four rounds of pressure. It weakens the very story the room had converged on."},
+    {r:"Throughout", seat:"opus", kind:"Disclosed interest",
+     quote:"I should flag that <span class=\"said\">Anthropic makes me</span>, so treat my judgement there with appropriate suspicion.",
+     gloss:"Claude twice flagged its own conflict of interest, unprompted, while arguing that an AI-governance story deserved more weight."},
+    {r:"Exchange", seat:"opus", kind:"The lesson",
+     quote:"Every one of us moved on a number rather than on an argument, and the numbers that moved us were the ones stated most confidently. <span class=\"said\">Confidence was a terrible proxy for accuracy today.</span>",
+     gloss:"Grok's $6.23 propagated through three models unchecked. Gemini's drone claim died the moment two of them looked. Both were stated the same way."}
+  ];
+
+  /* ---- text ---- */
+  function esc(s){return s.replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+  function fmt(t){
+    var h = esc(t);
+    h = h.replace(/\[\[(\d+)\]\]\(([^)\s]+)\)/g,
+      function(_,n,u){return '<sup class="cite"><a href="'+u+'" target="_blank" rel="noopener">'+n+'</a></sup>'});
+    h = h.replace(/\(\[([^\]]+)\]\(([^)\s]+)\)\)/g,
+      function(_,l,u){return '<sup class="cite"><a href="'+u+'" target="_blank" rel="noopener">'+l.replace(/^www\./,'').split('.')[0]+'</a></sup>'});
+    h = h.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g,
+      function(_,l,u){return '<a href="'+u+'" target="_blank" rel="noopener">'+l+'</a>'});
+    h = h.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
+    h = h.replace(/(^|[\s(])\*([^*\n]+)\*/g,"$1<em>$2</em>");
+    return h.split(/\n{2,}/).map(function(p){return "<p>"+p.replace(/\n/g," ")+"</p>"}).join("");
+  }
+  function num(n){return n==null?"—":n.toLocaleString("en-US")}
+
+  /* ---- masthead ---- */
+  document.getElementById("question").textContent = R.question;
+  document.getElementById("runid").textContent = R.run_id;
+  document.getElementById("stamp").textContent = R.date;
+
+  var seatsEl = document.getElementById("seats"), on = {};
+  R.order.forEach(function(s){
+    on[s] = true;
+    var b = document.createElement("button");
+    b.className = "seat-chip"; b.style.setProperty("--c","var(--"+s+")");
+    b.setAttribute("aria-pressed","true");
+    b.innerHTML = '<span class="dot"></span><span class="who">'+SHORT[s]+
+                  '</span><span class="vendor">'+VENDOR[s]+'</span>';
+    b.addEventListener("click", function(){
+      on[s] = !on[s]; b.setAttribute("aria-pressed", String(on[s])); applyFilter();
+    });
+    seatsEl.appendChild(b);
+  });
+  function applyFilter(){
+    document.querySelectorAll(".turn[data-seat]").forEach(function(el){
+      el.hidden = !on[el.dataset.seat];
+    });
+  }
+
+  /* ---- transcript ---- */
+  var t = [], turnCount = 0;
+  R.rounds.forEach(function(rd, i){
+    var m = ROUNDS[rd.key] || {name:rd.key, note:""};
+    t.push('<section class="round" id="r'+(i+1)+'">');
+    t.push('<div class="round-head"><span class="round-num">'+String(i+1).padStart(2,"0")+
+           '</span><h2 class="round-name">'+m.name+'</h2><span class="round-rule"></span></div>');
+    t.push('<p class="round-note">'+m.note+'</p>');
+    rd.turns.forEach(function(tn){
+      turnCount++;
+      var meta = [ (tn.latency!=null?tn.latency+"s":""),
+                   (tn.tokens?num(tn.tokens)+" tok":""),
+                   (tn.cites?tn.cites+(tn.cites===1?" source":" sources"):"no sources"),
+                   (tn.cost!=null?"$"+tn.cost.toFixed(3):"") ].filter(Boolean).join("  ·  ");
+      t.push('<article class="turn" data-seat="'+tn.seat+'" style="--c:var(--'+tn.seat+
+             ');--w:var(--'+tn.seat+'-wash)">');
+      t.push('<div class="turn-head"><span class="turn-who">'+R.labels[tn.seat]+
+             '</span><span class="turn-meta">'+meta+'</span></div>');
+      t.push('<div class="turn-body">'+fmt(tn.text)+'</div></article>');
+    });
+    t.push('</section>');
+  });
+  document.getElementById("view-transcript").innerHTML = t.join("");
+  document.getElementById("n-turns").textContent = turnCount;
+  document.getElementById("n-tp").textContent = TP.length;
+
+  /* ---- turning points ---- */
+  var p = ['<p class="tp-intro">The answer the room reached is in the synthesis. This is the part '+
+           'a single model cannot produce: thirteen moments where one participant moved another, '+
+           'or caught it, or was caught. Every quote is verbatim.</p>'];
+  TP.forEach(function(x){
+    p.push('<div class="tp" style="--c:var(--'+x.seat+')">');
+    p.push('<div class="tp-when">'+x.r+'<br>'+SHORT[x.seat]+'</div><div>');
+    p.push('<div class="tp-kind">'+x.kind+'</div>');
+    p.push('<blockquote>'+x.quote+'</blockquote>');
+    p.push('<p class="tp-gloss">'+x.gloss+'</p></div></div>');
+  });
+  document.getElementById("view-turns").innerHTML = p.join("");
+
+  /* ---- synthesis ---- */
+  var raw = R.synthesis.replace(/^_synthesized by ([^_]+)_\s*/,"");
+  var by = (R.synthesis.match(/^_synthesized by ([^_]+)_/)||[])[1] || "—";
+  var conf = (raw.match(/CONFIDENCE:\s*([\d.]+)/)||[])[1];
+  raw = raw.replace(/\n*CONFIDENCE:\s*[\d.]+\s*$/,"");
+  var s = ['<div class="synth">',
+    '<div class="by">Synthesized by '+by+' — deliberately not the host model. The role is a flag, not a fixture.</div>',
+    '<h2>The strongest answer the room can support</h2>',
+    '<div class="synth-body">'+fmt(raw)+'</div>'];
+  if(conf){
+    s.push('<div class="conf"><span class="conf-label">Stated confidence</span>'+
+           '<span class="conf-bar"><span class="conf-fill" style="width:'+(conf*100)+'%"></span></span>'+
+           '<span class="conf-num">'+conf+'</span></div>');
+  }
+  s.push('</div>');
+  s.push('<button class="ask" type="button" id="ask">Ask the room again <span class="mk">↵</span></button>');
+  document.getElementById("view-synthesis").innerHTML = s.join("");
+  document.getElementById("ask").addEventListener("click", function(){
+    this.textContent = "Run ./bin/clock.py round <run> exchange";
+  });
+
+  /* ---- ledger ---- */
+  var per = R.per_seat, maxTok = 0, maxC = 0;
+  R.order.forEach(function(s){ var d=per[s]||{}; maxTok=Math.max(maxTok,d.tokens||0); maxC=Math.max(maxC,d.cites||0) });
+  var l = ['<div class="ledger"><div class="ledger-grid">'];
+  R.order.forEach(function(s){
+    var d = per[s] || {turns:0,tokens:0,cost:0,cites:0};
+    l.push('<div class="lcell" style="--c:var(--'+s+')"><div class="who"><span class="dot"></span>'+
+      SHORT[s]+'</div><dl>'+
+      '<dt>turns</dt><dd>'+d.turns+'</dd>'+
+      '<dt>tokens</dt><dd>'+num(d.tokens)+'</dd>'+
+      '<dt>sources</dt><dd>'+d.cites+'</dd>'+
+      '<dt>cost</dt><dd>$'+d.cost.toFixed(2)+'</dd></dl></div>');
+  });
+  l.push('</div>');
+  l.push('<p class="ledger-note">Seventeen turns, '+num(R.totals.tokens)+' tokens and '+
+    R.totals.cites+' web sources, for <strong>$'+R.totals.cost.toFixed(2)+
+    '</strong> all in. The spread is the interesting part: the two models that searched hardest '+
+    'are not the two that spent the most, and the cheapest seat in the room is the one that '+
+    'caught itself being agreeable.</p>');
+  l.push('<div class="bars">');
+  R.order.forEach(function(s){
+    var d = per[s]||{};
+    l.push('<div class="bar-row" style="--c:var(--'+s+')"><span class="lbl">'+SHORT[s]+
+      ' · sources</span><span class="bar-track"><span class="bar-fill" style="width:'+
+      ((d.cites||0)/maxC*100)+'%"></span></span><span class="bar-val">'+(d.cites||0)+'</span></div>');
+  });
+  l.push('</div></div>');
+  document.getElementById("view-ledger").innerHTML = l.join("");
+
+  /* ---- tabs ---- */
+  document.querySelectorAll(".tab").forEach(function(tab){
+    tab.addEventListener("click", function(){
+      document.querySelectorAll(".tab").forEach(function(o){
+        o.setAttribute("aria-selected", String(o === tab));
+      });
+      ["transcript","turns","synthesis","ledger"].forEach(function(v){
+        document.getElementById("view-"+v).hidden = (v !== tab.dataset.view);
+      });
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  });
+})();
+</script>
