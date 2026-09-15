@@ -118,8 +118,11 @@
     <p class="dlg-note">Three claims, and what makes each true rather than promised.</p>
     <dl class="claims">
       <dt>There is no server to leak to.</dt>
-      <dd>This is a static page. It has no backend, no database, no API routes. The only thing
-        the host ever does is hand your browser three files.</dd>
+      <dd>This is a static page. It has no backend, no database and no API routes of its own —
+        the only thing it ever does is hand your browser three files. Azure keeps two read-only
+        endpoints of its own on this domain (<code>/.auth/me</code> and <code>/.auth/logout</code>)
+        that cannot be switched off; the sign-in endpoints are turned off, nothing here calls any
+        of them, and the policy below forbids this page from doing so.</dd>
       <dt>The page cannot reach anywhere but OpenRouter.</dt>
       <dd>Every response carries
         <code>default-src 'none'; connect-src https://openrouter.ai</code>. Your browser — not this

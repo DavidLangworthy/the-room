@@ -20,7 +20,39 @@
   },
   "routes": [
     {
-      "route": "/.auth/*",
+      "route": "/.auth/me",
+      "statusCode": 404
+    },
+    {
+      "route": "/.auth/logout",
+      "statusCode": 404
+    },
+    {
+      "route": "/.auth/purge/aad",
+      "statusCode": 404
+    },
+    {
+      "route": "/.auth/purge/github",
+      "statusCode": 404
+    },
+    {
+      "route": "/.auth/login/aad",
+      "statusCode": 404
+    },
+    {
+      "route": "/.auth/login/github",
+      "statusCode": 404
+    },
+    {
+      "route": "/.auth/login/twitter",
+      "statusCode": 404
+    },
+    {
+      "route": "/.auth/login/facebook",
+      "statusCode": 404
+    },
+    {
+      "route": "/.auth/login/google",
       "statusCode": 404
     }
   ]
