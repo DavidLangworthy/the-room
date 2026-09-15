@@ -29,8 +29,9 @@ const SYNTHESIZER = 'sol';   // deliberately not the model that wrote this page
 
 const STAGES = [
   { key: 'independent', name: 'Independent', verb: 'Asking the room',
-    note: "Asked alone. No participant can see another's answer before committing to its own — " +
-          'the property that keeps the room from collapsing into an echo of whoever spoke first.' },
+    note: 'Asked cold. No participant is told that anyone else is answering, or who — not just ' +
+          "kept from the others' text, but unaware there is a room at all, so nobody can posture, " +
+          'defer, or leave a gap for someone else to fill.' },
   { key: 'critique', name: 'Critique', verb: 'Comparing perspectives',
     note: 'Each model now reads the other three and responds. Web search stays on, so a shaky ' +
           'number can be checked rather than deferred to.' },
@@ -43,14 +44,28 @@ const STAGES = [
 ];
 const MODES = { deliberate: ['independent', 'critique', 'reconsider', 'exchange'], quick: ['independent'] };
 
-const systemFor = (label, date) =>
+// Round one is blind, and blind means the model is never told that anyone else is
+// answering, or who. Merely knowing the room is enough to change what a model says: it
+// postures, it defers to whoever it assumes is stronger on a topic, it leaves gaps for
+// someone else to fill. The others are introduced in round two, together with their answers.
+const systemBlind = date =>
+`Today is ${date}.
+
+Answer in your own voice, as prose. No headings, no bullet lists, no section labels, no \
+restating the question back.
+
+Say what you actually think, and say plainly when you don't know or when the evidence is \
+thin. You have web search: use it to check a fact rather than asserting it from memory. Be \
+concise — a few tight paragraphs at most.`;
+
+// From round two on, the room exists and the model is told who is in it.
+const systemRoom = (label, date) =>
 `You are ${label}, one of four AI models from four different companies sitting in one room and \
 thinking together. The room is Claude (Anthropic), GPT (OpenAI), Gemini (Google) and Grok (xAI). \
 Today is ${date}.
 
 Talk like a person in a good conversation. Prose, your own voice, no headings, no bullet lists, \
-no section labels, no restating the question back. Address the others directly by name when you \
-are responding to them.
+no section labels. Address the others directly by name when you are responding to them.
 
 You are not here to be agreeable. Say what you actually think, disagree plainly when you \
 disagree, and say plainly when you don't know or when you were wrong. You have web search: use \
@@ -59,12 +74,11 @@ agreement that isn't there, and never manufacture disagreement that isn't there 
 concise — a few tight paragraphs at most.`;
 
 const PROMPTS = {
-  independent: q =>
-    `${q}\n\nThis is the first round and you are answering alone — you have not seen and will ` +
-    `not see what the others said before you commit to this. Give your own answer, on the record.`,
+  independent: q => q,
   critique: others =>
-    `The room has now spoken. Here is what each of the others said, independently, to the same ` +
-    `question:\n\n${others}\n\nRespond to them. Where do you agree, where do you think one of ` +
+    `Something you were not told: three other AI models, from three other companies, were asked ` +
+    `that same question at the same moment, each of them alone and unaware of the rest — as were ` +
+    `you. Here is what each of them said:\n\n${others}\n\nRespond to them. Where do you agree, where do you think one of ` +
     `them is wrong or is missing something that matters, and what did someone surface that you ` +
     `didn't? Go check the specific factual claims that look shaky rather than smoothing them ` +
     `over. Name names.`,
@@ -296,7 +310,11 @@ async function runStage(stage, idx, question, prevRound) {
   const jobs = seats.map(seat => {
     const ui = turnEl(sec, seat);
     const mem = state.run.memory[seat.id] ||
-      (state.run.memory[seat.id] = [{ role: 'system', content: systemFor(seat.label, state.run.date) }]);
+      (state.run.memory[seat.id] = [{ role: 'system', content: systemBlind(state.run.date) }]);
+    // The room only exists from the critique round on; until then this seat has never heard of it.
+    if (stage.key !== 'independent') {
+      mem[0] = { role: 'system', content: systemRoom(seat.label, state.run.date) };
+    }
     const content = stage.key === 'independent'
       ? PROMPTS.independent(question)
       : PROMPTS[stage.key](othersBlock(prevRound, seat.id));
