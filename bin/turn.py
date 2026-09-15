@@ -15,8 +15,14 @@ rd = f"{run_dir}/rounds/{rnd}"
 os.makedirs(rd, exist_ok=True)
 
 msgs = json.load(open(msgs_p)) if os.path.exists(msgs_p) else [
-    {"role": "system", "content": run["system"].replace("{SEAT}", run["labels"][seat])}
+    {"role": "system", "content": run["system"]}          # round one is blind
 ]
+# The room only exists from the critique round on. Until then this seat has never
+# been told that anyone else is answering, or who.
+if not rnd.endswith("independent") and run.get("system_room"):
+    msgs[0] = {"role": "system",
+               "content": run["system_room"].replace("{SEAT}", run["labels"][seat])
+                                            .replace("{DATE}", run.get("date", ""))}
 prompt = open(f"{rd}/{seat}.prompt.md").read()
 send = msgs + [{"role": "user", "content": prompt}]
 
