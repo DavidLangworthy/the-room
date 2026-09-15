@@ -178,6 +178,10 @@
    product's own metaphor doing a real job — it is the progress display.
    ====================================================================== */
 
+/* An author `display` beats the UA rule for [hidden], so say it once, loudly:
+   .conf and .ledger-strip are flex and would otherwise ignore the attribute. */
+[hidden]{display:none!important}
+
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
          clip:rect(0 0 0 0);white-space:nowrap;border:0}
 body{min-height:100vh}

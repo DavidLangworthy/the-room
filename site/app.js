@@ -243,11 +243,11 @@ function paintProgress(keys, activeIdx) {
   });
 }
 
-function notice(msg) {
+function notice(msg, parent) {
   const d = document.createElement('div');
   d.className = 'notice';
   d.innerHTML = msg;
-  $('rounds').appendChild(d);
+  (parent || $('rounds')).appendChild(d);
 }
 
 function paintLedger() {
@@ -329,7 +329,7 @@ async function runStage(stage, idx, question, prevRound) {
   if (ok < seats.length && !state.run.stopped) {
     const missing = round.turns.filter(t => !t.meta.ok).map(t => SEAT[t.seat].short);
     notice(`<b>${missing.join(' and ')} ${missing.length > 1 ? 'were' : 'was'} unavailable for this round.</b> ` +
-           `Clock carried on with ${ok} participant${ok === 1 ? '' : 's'}.`);
+           `Clock carried on with ${ok} participant${ok === 1 ? '' : 's'}.`, sec);
   }
   return round;
 }
