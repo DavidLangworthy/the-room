@@ -63,7 +63,7 @@
     <div class="run-head">
       <div class="run-head-text">
         <p class="stage-now" id="stage-now" aria-live="polite">Asking the room…</p>
-        <h2 id="run-question"></h2>
+        <h2 id="run-question" tabindex="-1"></h2>
       </div>
       <div class="run-actions">
         <button class="btn-quiet sm" id="stop" type="button">Stop</button>
@@ -72,7 +72,7 @@
       </div>
     </div>
 
-    <div class="progress" id="progress" aria-label="Stages"></div>
+    <div class="progress" id="progress" role="group" aria-label="Stages"></div>
     <div id="rounds"></div>
 
     <div class="synth" id="synth-box" hidden>
@@ -99,12 +99,12 @@
       It is sent only to <code>openrouter.ai</code>, in the <code>Authorization</code> header, by this
       tab. OpenRouter bills you directly.</p>
     <label class="sr-only" for="key">OpenRouter API key</label>
-    <input id="key" type="password" placeholder="sk-or-v1-…" autocomplete="off" spellcheck="false">
+    <input id="key" type="password" placeholder="sk-or-v1-…" autocomplete="off" spellcheck="false" autofocus>
     <label class="check"><input type="checkbox" id="remember">
       <span>Keep it in this browser so I don't have to paste it again</span></label>
     <p class="dlg-note quiet" id="key-state"></p>
     <menu>
-      <button value="clear" class="btn-quiet" id="clear-key" type="submit">Forget key</button>
+      <button value="clear" class="btn-quiet" id="clear-key" type="button">Forget key</button>
       <span class="spacer"></span>
       <button value="cancel" class="btn-quiet" type="submit">Cancel</button>
       <button value="save" class="btn-solid" id="save-key" type="submit">Save</button>
