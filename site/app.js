@@ -503,6 +503,13 @@ function download() {
 }
 
 // ----------------------------------------------------------------- key ----
+/** The header button is the only place a user can tell whether Clock has a key. */
+function paintKey() {
+  $('key-dot').classList.toggle('set', !!state.key);
+  $('key-btn-label').textContent = state.key ? 'Key set' : 'Add key';
+  $('tagline').textContent = state.key ? 'a room of four minds' : 'bring your own OpenRouter key';
+}
+
 function keyState() {
   $('key-state').textContent = state.key
     ? (state.remembered ? 'A key is saved in this browser.' : 'A key is set for this tab only.')
@@ -556,10 +563,10 @@ function init() {
   } catch (_) {}
   buildTeam();
 
-  document.querySelectorAll('.mode').forEach(btn => {
+  document.querySelectorAll('.seg-b').forEach(btn => {
     btn.addEventListener('click', () => {
       state.mode = btn.dataset.mode;
-      document.querySelectorAll('.mode').forEach(b =>
+      document.querySelectorAll('.seg-b').forEach(b =>
         b.setAttribute('aria-checked', String(b === btn)));
     });
   });
@@ -597,9 +604,10 @@ function init() {
       state.remembered = false;
       try { localStorage.removeItem(LS_KEY); } catch (_) {}
     }
+    paintKey();
   });
 
-  if (!state.key) $('tagline').textContent = 'bring your own OpenRouter key';
+  paintKey();
 }
 
 document.addEventListener('DOMContentLoaded', init);
