@@ -198,10 +198,12 @@ body{min-height:100vh}
 .bar-right{display:flex;align-items:center;gap:14px}
 
 .linkish{appearance:none;background:none;border:0;padding:0;font:inherit;font-size:12.5px;
+         white-space:nowrap;
          color:var(--ink-3);cursor:pointer}
 .linkish:hover{color:var(--ink)}
 
 .btn-quiet{appearance:none;background:var(--surface);border:1px solid var(--rule);
+           white-space:nowrap;
            border-radius:999px;font:inherit;font-size:13px;font-weight:500;color:var(--ink);
            padding:8px 16px;cursor:pointer;transition:border-color .16s,background .16s;
            display:inline-flex;align-items:center;gap:8px}
@@ -343,7 +345,11 @@ dialog::backdrop{background:color-mix(in srgb,var(--sunk) 70%,transparent);backd
 :focus-visible{outline:2px solid var(--brass);outline-offset:3px;border-radius:3px}
 
 @media(max-width:640px){
-  .bar-in{padding:12px 18px}
+  /* three controls plus the wordmark do not fit on one phone row; let the bar
+     take two rows rather than wrapping each label into a ragged block */
+  .bar-in{padding:12px 18px;flex-wrap:wrap;row-gap:10px}
+  .bar-right{width:100%;justify-content:space-between;gap:10px}
+  .linkish{font-size:12px}
   .wordmark span{display:none}
   #ask-view{padding-top:18px}
   #question{border-radius:22px;padding:18px 20px}
