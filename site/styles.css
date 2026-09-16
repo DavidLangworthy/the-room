@@ -356,3 +356,33 @@ dialog::backdrop{background:color-mix(in srgb,var(--sunk) 70%,transparent);backd
   .dlg{padding:22px 20px 18px}
   .dlg menu{flex-wrap:wrap}
 }
+
+/* ---------------------------------------------------- how it works ---- */
+#how-view{padding:26px 24px 96px}
+.how-in{width:min(940px,100%);margin-inline:auto}
+.back{margin-bottom:26px}
+.how-h1{font-size:clamp(1.8rem,1.2rem + 2.2vw,2.6rem);line-height:1.08;letter-spacing:-.032em;
+        font-weight:600;margin:0;max-width:18ch;text-wrap:balance}
+.how-lede{font-size:1.04rem;line-height:1.6;color:var(--ink-2);margin:18px 0 0;max-width:60ch}
+
+.flow{margin:38px 0 0}
+/* The diagram carries 11px labels; below about 900px they stop being readable, so it
+   scrolls in its own track rather than shrinking into decoration. */
+.flow-scroll{overflow-x:auto;overscroll-behavior-x:contain;border:1px solid var(--rule);
+             border-radius:10px;background:var(--surface);padding:10px}
+.flow-scroll img{display:block;width:100%;min-width:860px;height:auto}
+.flow figcaption{font-size:12.5px;line-height:1.6;color:var(--ink-3);margin-top:12px;
+                 max-width:68ch}
+.flow figcaption a{color:var(--sol)}
+
+.how-claims{margin-top:44px}
+.how-claims dt{margin-top:26px}
+.how-claims dt:first-child{margin-top:0}
+.how-foot{margin-top:38px;padding-top:20px;border-top:1px solid var(--rule);
+          font-size:13.5px;line-height:1.6;color:var(--ink-3);max-width:62ch}
+#how-start{margin-top:26px}
+
+@media(max-width:640px){
+  .flow-scroll{padding:6px}
+  .flow-scroll img{min-width:760px}
+}

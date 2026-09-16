@@ -15,6 +15,7 @@
   <div class="bar-in">
     <div class="wordmark"><b>Clock.</b><span id="tagline">a room of four minds</span></div>
     <div class="bar-right">
+      <button class="linkish" id="open-how" type="button">How it works</button>
       <button class="linkish" id="open-privacy" type="button">Where your data goes</button>
       <button class="btn-quiet sm" id="open-key" type="button">
         <span class="key-dot" id="key-dot"></span><span id="key-btn-label">Add key</span>
@@ -87,6 +88,70 @@
     </div>
 
     <div class="ledger-strip" id="ledger" hidden></div>
+  </div>
+</section>
+
+<!-- ========================== HOW IT WORKS ========================== -->
+<section id="how-view" hidden>
+  <div class="how-in">
+    <button class="btn-quiet sm back" id="how-back" type="button">&#8592; Back</button>
+
+    <h1 class="how-h1">How Clock works</h1>
+    <p class="how-lede">One question goes to four frontier models from four different
+      companies. They answer alone, then read each other and argue for three more rounds, and a
+      synthesizer builds the strongest combined answer. Every arc below is one API call, made
+      from this browser tab.</p>
+
+    <figure class="flow">
+      <div class="flow-scroll">
+        <img src="how-it-works.svg" width="1250" height="1470"
+             alt="A five-layer diagram. At the top, one question fans out to four model nodes —
+                  Claude, GPT, Gemini and Grok — with no connections between them, marked round
+                  one is blind. Between each later round every node has a straight line carrying
+                  its own memory forward and three curved lines bringing the other three models'
+                  answers, never its own. A dashed rail down the right collects every turn into
+                  the transcript, which flows into a single synthesis node at the bottom, and one
+                  answer leaves it.">
+      </div>
+      <figcaption>
+        Colour is the model that spoke. Thick straight lines are a model carrying its own memory
+        forward; thin curves are the other three's answers arriving.
+        <a href="how-it-works.svg" download="clock-flow.svg">Download this diagram</a>.
+      </figcaption>
+    </figure>
+
+    <dl class="claims how-claims">
+      <dt>Round one is blind.</dt>
+      <dd>No model is told that anyone else is answering, or who. Not merely kept from the
+        others' text — unaware there is a room at all, so nobody postures, defers to whoever they
+        assume is stronger on the topic, or leaves a gap for someone else to fill. The room is
+        introduced in round two, together with the other answers.</dd>
+
+      <dt>Each model keeps its own conversation.</dt>
+      <dd>A seat's memory is its own turns plus what it was shown. It never sees its own answer
+        played back as if someone else had said it, and it never sees a round it missed.</dd>
+
+      <dt>An answer cut off at the token ceiling is a failure, not a short answer.</dt>
+      <dd>It is marked failed, it does not enter that model's memory, and it is never passed to
+        the others as though it were a position. Half a thought is worse than none, because the
+        room would argue with it.</dd>
+
+      <dt>If a model drops out, the room carries on.</dt>
+      <dd>A rate limit or an outage costs you that seat for that round, not the run — Clock says
+        who was missing and continues with the rest. If fewer than two models are still
+        answering there is nothing left to argue with, so it goes straight to the synthesis.</dd>
+
+      <dt>The synthesizer reads the record, not its own side.</dt>
+      <dd>It gets fresh context and the whole transcript, and is told not to take a majority vote
+        or average anyone into blandness. It is deliberately not the model that wrote this
+        page.</dd>
+    </dl>
+
+    <p class="how-foot">A four-round run is seventeen API calls and usually costs a couple of
+      dollars, billed to you by OpenRouter. Quick mode is one round plus the synthesis, for about
+      a fifth of that.</p>
+
+    <button class="ask" id="how-start" type="button">Ask the room</button>
   </div>
 </section>
 
