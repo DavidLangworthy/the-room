@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Clock — a room of four minds</title>
+<title>Room of Models — one question, four minds</title>
 <meta name="description" content="Ask one question. Four frontier AI models from four different companies answer independently, then argue. Runs entirely in your browser.">
 <meta name="referrer" content="no-referrer">
 <link rel="stylesheet" href="styles.css">
@@ -14,10 +14,11 @@
 <header class="bar">
   <div class="bar-in">
     <div class="brand">
-      <img class="mark" src="tandem-mark.svg" alt="" width="34" height="34">
-      <span class="brandname">Tandem Works</span>
-      <span class="brand-rule" aria-hidden="true"></span>
-      <span class="wordmark"><b>Clock.</b><span id="tagline">a room of four minds</span></span>
+      <img class="mark" src="tandem-mark.svg" alt="" width="56" height="56">
+      <span class="brand-text">
+        <span class="brandname">Tandem Works</span>
+        <span class="product">Room of Models<span id="tagline"></span></span>
+      </span>
     </div>
     <div class="bar-right">
       <button class="linkish" id="open-how" type="button">How it works</button>
@@ -111,7 +112,7 @@
   <div class="how-in">
     <button class="btn-quiet sm back" id="how-back" type="button">&#8592; Back</button>
 
-    <h1 class="how-h1">How Clock works</h1>
+    <h1 class="how-h1">How the room works</h1>
     <p class="how-lede">One question goes to four frontier models from four different
       companies. They answer alone, then read each other and argue for three more rounds, and a
       synthesizer builds the strongest combined answer. Every arc below is one API call, made
@@ -131,7 +132,7 @@
       <figcaption>
         Colour is the model that spoke. Thick straight lines are a model carrying its own memory
         forward; thin curves are the other three's answers arriving.
-        <a href="how-it-works.svg" download="clock-flow.svg">Download this diagram</a>.
+        <a href="how-it-works.svg" download="room-of-models-flow.svg">Download this diagram</a>.
       </figcaption>
     </figure>
 
@@ -152,8 +153,8 @@
         room would argue with it.</dd>
 
       <dt>If a model drops out, the room carries on.</dt>
-      <dd>A rate limit or an outage costs you that seat for that round, not the run — Clock says
-        who was missing and continues with the rest. If fewer than two models are still
+      <dd>A rate limit or an outage costs you that seat for that round, not the run — the room says
+        who was missing and carries on with the rest. If fewer than two models are still
         answering there is nothing left to argue with, so it goes straight to the synthesis.</dd>
 
       <dt>The synthesizer reads the record, not its own side.</dt>

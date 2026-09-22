@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1250 1470" width="1250" height="1470" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, &quot;SF Pro Text&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif">
-<title id="t">How one question becomes one answer in Clock</title>
+<title id="t">How one question becomes one answer in Room of Models</title>
 <desc id="d">Four AI models answer a question independently in round one with no connections between them, then exchange answers across three further rounds, and the whole transcript flows into a single synthesis node.</desc>
 <style>
   :root{
@@ -57,7 +57,7 @@
 </defs>
 <rect class="bg" width="1250" height="1470"/>
 <text x="44.0" y="62.0" class="h1" text-anchor="start">How one question becomes one answer</text>
-<text x="44.0" y="88.0" class="h2" text-anchor="start">Four frontier models, four rounds, one synthesis — the shape of a single Clock run.</text>
+<text x="44.0" y="88.0" class="h2" text-anchor="start">Four frontier models, four rounds, one synthesis — the shape of a single run.</text>
 <line class="divider" x1="44" y1="108" x2="1206" y2="108"/>
 <rect class="qcard" x="375.5" y="149.0" width="470" height="54" rx="27"/>
 <text x="610.5" y="181.0" class="qtext" text-anchor="middle">Your question</text>

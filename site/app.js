@@ -1,4 +1,4 @@
-/* Clock — four frontier models from four companies, deliberating in your browser.
+/* Room of Models — four frontier models from four companies, deliberating in your browser.
  *
  * This file is the whole product. It holds the orchestration that a human used to do by
  * hand between rounds: it asks each model alone, collects what they said, composes the
@@ -290,7 +290,7 @@ function paintLedger() {
     const p = per[t.seat] || (per[t.seat] = { tokens: 0, cost: 0, cites: 0, turns: 0 });
     const u = t.meta.usage || {};
     // OpenRouter bills a truncated turn in full — the ledger counts the money either way,
-    // and only the turn count is restricted to answers Clock actually used.
+    // and only the turn count is restricted to answers the room actually used.
     if (t.meta.ok) { p.turns++; tot.turns++; }
     p.tokens += u.total_tokens || 0; tot.tokens += u.total_tokens || 0;
     p.cost += u.cost || 0;           tot.cost += u.cost || 0;
@@ -373,7 +373,7 @@ async function runStage(stage, idx, question, prevRound) {
   if (ok > 0 && ok < round.turns.length && !state.run.stopped) {
     const missing = round.turns.filter(t => !t.meta.ok).map(t => SEAT[t.seat].short);
     notice(`<b>${missing.join(' and ')} ${missing.length > 1 ? 'were' : 'was'} unavailable for this round.</b> ` +
-           `Clock carried on with ${ok} participant${ok === 1 ? '' : 's'}.`, sec);
+           `The room carried on with ${ok} participant${ok === 1 ? '' : 's'}.`, sec);
   }
   return round;
 }
@@ -470,11 +470,11 @@ async function run() {
       if (state.run.stopped) break;
       if (prev.turns.filter(t => t.meta.ok).length < 2 && i + 1 < keys.length) {
         notice('<b>Fewer than two models are still answering.</b> There is no room left to ' +
-               'argue with, so Clock went straight to the synthesis.');
+               'argue with, so it went straight to the synthesis.');
         break;
       }
       if (!prev.turns.some(t => t.meta.ok)) {
-        notice('<b>Every seat failed this round.</b> Clock stopped here rather than synthesizing nothing.');
+        notice('<b>Every seat failed this round.</b> The room stopped here rather than synthesizing nothing.');
         state.run.stopped = true;
         break;
       }
@@ -511,12 +511,12 @@ function buildDownload() {
     `style-src 'unsafe-inline'; img-src data:; form-action 'none'; base-uri 'none'">` +
     `<meta name="referrer" content="no-referrer">` +
     `<meta name="viewport" content="width=device-width,initial-scale=1">` +
-    `<title>Clock — ${esc(r.question.slice(0, 70))}</title><style>${css}` +
+    `<title>Room of Models — ${esc(r.question.slice(0, 70))}</title><style>${css}` +
     `.turn.live .turn-body::after{display:none}@media print{.turn,.tp{break-inside:avoid}}` +
     `</style></head><body><div class="shell">`;
 
   const parts = [head];
-  parts.push(`<header class="mast"><div class="mast-top"><div class="wordmark"><b>Clock.</b> &nbsp;the room</div>` +
+  parts.push(`<header class="mast"><div class="mast-top"><div class="wordmark"><b>Room of Models</b></div>` +
     `<div class="stamp">${esc(r.date)}</div></div>` +
     `<p class="kicker">One question · ${r.team.length} vendors · ${r.rounds.length} round${r.rounds.length === 1 ? '' : 's'}</p>` +
     `<h1>${esc(r.question)}</h1>` +
@@ -559,7 +559,7 @@ function buildDownload() {
   }
 
   const t = r.totals || { turns: 0, tokens: 0, cites: 0, cost: 0 };
-  parts.push(`</main><footer><span>Produced by Clock in a browser tab. ${t.turns} turns, ` +
+  parts.push(`</main><footer><span>Produced by Room of Models in a browser tab. ${t.turns} turns, ` +
     `${num(t.tokens)} tokens, ${t.cites} web sources, $${t.cost.toFixed(2)} billed by OpenRouter. ` +
     `Every turn is a real API call to the named vendor; any factual claims are the models' own.` +
     `</span><span><code>${esc(r.date)}</code></span></footer></div></body></html>`);
@@ -579,7 +579,7 @@ function download() {
   const a = document.createElement('a');
   const slug = state.run.question.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48);
   a.href = url;
-  a.download = `clock-${slug || 'run'}.html`;
+  a.download = `room-of-models-${slug || 'run'}.html`;
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -587,11 +587,11 @@ function download() {
 }
 
 // ----------------------------------------------------------------- key ----
-/** The header button is the only place a user can tell whether Clock has a key. */
+/** The header button is the only place a user can tell whether the room has a key. */
 function paintKey() {
   $('key-dot').classList.toggle('set', !!state.key);
   $('key-btn-label').textContent = state.key ? 'Key set' : 'Add key';
-  $('tagline').textContent = state.key ? 'a room of four minds' : 'bring your own OpenRouter key';
+  $('tagline').textContent = state.key ? '' : ' — bring your own OpenRouter key';
 }
 
 function keyState() {
