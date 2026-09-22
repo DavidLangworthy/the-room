@@ -56,21 +56,31 @@ fi
 
 EXPECTED_CNAME="${DEFAULT_HOSTNAME%.}"
 
-if command -v dig >/dev/null 2>&1; then
+# An apex domain cannot hold a CNAME (RFC 1034 — it would collide with the zone's
+# mandatory SOA and NS records), so Azure validates it with a TXT token instead.
+# Anything with a label in front of the registrable pair is a subdomain and uses
+# CNAME delegation, which validates itself once DNS resolves.
+DOT_COUNT="$(printf '%s' "$CUSTOM_DOMAIN" | tr -cd '.' | wc -c | tr -d ' ')"
+if [[ "$DOT_COUNT" -le 1 ]]; then
+  VALIDATION_METHOD="dns-txt-token"
+else
+  VALIDATION_METHOD="cname-delegation"
+fi
+info "Domain $CUSTOM_DOMAIN will be validated by $VALIDATION_METHOD."
+
+if [[ "$VALIDATION_METHOD" = "cname-delegation" ]] && command -v dig >/dev/null 2>&1; then
   OBSERVED_CNAME="$(dig +short CNAME "$CUSTOM_DOMAIN" | sed 's/\.$//' | head -n 1)"
   if [[ -z "$OBSERVED_CNAME" ]]; then
     warn "DNS is not ready yet. No live CNAME was found for $CUSTOM_DOMAIN."
+    printf 'Add this record, then re-run:\n  CNAME  %s  ->  %s\n' \
+      "$CUSTOM_DOMAIN" "$EXPECTED_CNAME" >&2
     exit "$PENDING_DNS_EXIT_CODE"
   fi
-
   if [[ "$(lowercase "$OBSERVED_CNAME")" != "$(lowercase "$EXPECTED_CNAME")" ]]; then
     warn "DNS is not ready yet. $CUSTOM_DOMAIN points to $OBSERVED_CNAME but must point to $EXPECTED_CNAME."
     exit "$PENDING_DNS_EXIT_CODE"
   fi
-
   info "Live DNS CNAME matches the expected Static Web App hostname."
-else
-  warn "dig is not available. Falling back to Azure hostname validation."
 fi
 
 set +e
@@ -78,10 +88,30 @@ SET_OUTPUT="$(az staticwebapp hostname set \
   --resource-group "$RESOURCE_GROUP" \
   --name "$STATIC_WEB_APP_NAME" \
   --hostname "$CUSTOM_DOMAIN" \
-  --validation-method cname-delegation \
+  --validation-method "$VALIDATION_METHOD" \
   -o json 2>&1)"
 SET_STATUS=$?
 set -e
+
+if [[ "$VALIDATION_METHOD" = "dns-txt-token" && "$SET_STATUS" -eq 0 ]]; then
+  TOKEN="$(az staticwebapp hostname show \
+    --resource-group "$RESOURCE_GROUP" \
+    --name "$STATIC_WEB_APP_NAME" \
+    --hostname "$CUSTOM_DOMAIN" \
+    --query validationToken -o tsv 2>/dev/null)"
+  STATUS="$(az staticwebapp hostname show \
+    --resource-group "$RESOURCE_GROUP" \
+    --name "$STATIC_WEB_APP_NAME" \
+    --hostname "$CUSTOM_DOMAIN" \
+    --query status -o tsv 2>/dev/null)"
+  if [[ -n "$TOKEN" ]]; then
+    printf '\nPublish these two records in DNS, both unproxied:\n\n'
+    printf '  TXT    %s                 %s\n' "$CUSTOM_DOMAIN" "$TOKEN"
+    printf '  CNAME  %s                 %s   (or an A record to the SWA inbound IP)\n\n' \
+      "$CUSTOM_DOMAIN" "$EXPECTED_CNAME"
+    printf 'Current status: %s. Re-run this script once the records resolve.\n' "$STATUS"
+  fi
+fi
 
 if [[ "$SET_STATUS" -ne 0 ]]; then
   if ! command -v dig >/dev/null 2>&1 && looks_like_pending_dns_error "$SET_OUTPUT"; then
