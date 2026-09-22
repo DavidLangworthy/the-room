@@ -37,12 +37,16 @@ from datetime import datetime, timezone
 API = "https://openrouter.ai/api/v1/chat/completions"
 
 SEATS = {"opus": "anthropic/claude-opus-5", "sol": "openai/gpt-5.6-sol",
-         "gemini": "google/gemini-3.1-pro-preview", "grok": "x-ai/grok-4.6"}
+         "gemini": "google/gemini-3.1-pro-preview", "grok": "x-ai/grok-4.6",
+         "meta": "meta/muse-spark-1.3"}
 LABELS = {"opus": "Claude (Anthropic)", "sol": "GPT (OpenAI)",
-          "gemini": "Gemini (Google)", "grok": "Grok (xAI)"}
-VENDOR = {"opus": "Anthropic", "sol": "OpenAI", "gemini": "Google", "grok": "xAI"}
-SHORT = {"opus": "Claude", "sol": "GPT", "gemini": "Gemini", "grok": "Grok"}
-ORDER = ["opus", "sol", "gemini", "grok"]
+          "gemini": "Gemini (Google)", "grok": "Grok (xAI)",
+          "meta": "Muse (Meta)"}
+VENDOR = {"opus": "Anthropic", "sol": "OpenAI", "gemini": "Google", "grok": "xAI",
+          "meta": "Meta"}
+SHORT = {"opus": "Claude", "sol": "GPT", "gemini": "Gemini", "grok": "Grok",
+         "meta": "Muse"}
+ORDER = ["opus", "sol", "gemini", "grok", "meta"]
 SYNTHESIZER = "sol"
 
 SYSTEM_BLIND = """Today is {DATE}.
@@ -76,7 +80,7 @@ ROUNDS = {
  "critique": ("Critique",
   "Each model now reads the other three and responds. Web search stays on, so a shaky number "
   "can be checked rather than deferred to.",
-  "Something you were not told: three other AI models, from three other companies, were asked "
+  "Something you were not told: four other AI models, from four other companies, were asked "
   "that same question at the same moment, each of them alone and unaware of the rest — as were "
   "you. Here is what each of them said:\n\n{OTHERS}\n\nRespond to them. Where do you agree, where do you think one of "
   "them is wrong or is missing something that matters, and what did someone surface that you "
@@ -97,7 +101,7 @@ ROUNDS = {
 PIPELINE = ["independent", "critique", "reconsider", "exchange"]
 
 SYNTH_PROMPT = (
- "You are the synthesizer for this run. Four models — Claude, GPT, Gemini and Grok — were "
+ "You are the synthesizer for this run. {roster} were "
  "asked: \"{Q}\"\n\nHere is the entire conversation, in order:\n\n{ALL}\n\nWrite the strongest "
  "combined answer the room can support. Do not take a majority vote and do not average anyone "
  "into blandness. Say what they agreed on, what they disagreed on and why, what evidence would "
@@ -203,7 +207,15 @@ def synthesize(store, run, question):
         blocks.append("===== ROUND: %s =====" % rd["name"])
         for t in rd["turns"]:
             blocks.append("--- %s ---\n%s" % (LABELS[t["seat"]], t["text"]))
-    prompt = SYNTH_PROMPT.replace("{Q}", question).replace("{ALL}", "\n\n".join(blocks))
+    # Name who was actually in the room, so the synthesizer cannot invent a roster.
+    spoke = [s for s in run.get("order", ORDER)
+             if any(t["seat"] == s for rd in run["rounds"] for t in rd["turns"])]
+    names = [LABELS[s] for s in spoke]
+    roster = ("One model, %s," % names[0]) if len(names) == 1 else (
+        "%d models — %s and %s —" % (len(names), ", ".join(names[:-1]), names[-1]))
+    prompt = (SYNTH_PROMPT.replace("{roster}", roster)
+                          .replace("{Q}", question)
+                          .replace("{ALL}", "\n\n".join(blocks)))
     # Fresh context on purpose: the synthesizer reads the record, it does not carry its own side.
     text, meta = call(run["seats"][SYNTHESIZER],
                       [{"role": "user", "content": prompt}])
@@ -327,7 +339,7 @@ def render(run, tp=None):
       'other and argued for three more rounds — every model keeping its own memory of the '
       'conversation. Nothing below was edited or reordered. The disagreements are the point.</p>')
     w('<div class="seats">')
-    for s in ORDER:
+    for s in run.get("order", ORDER):
         w('<button class="seat-chip" type="button" data-seat="%s" aria-pressed="true" '
           'style="--c:var(--%s)"><span class="dot"></span><span class="who">%s</span>'
           '<span class="vendor">%s</span></button>' % (s, s, SHORT[s], VENDOR[s]))
@@ -402,7 +414,7 @@ def render(run, tp=None):
     per, tot = run["per_seat"], run["totals"]
     w('<h2 class="panel-title">What it cost</h2><section class="panel" id="view-ledger">'
       '<div class="ledger"><div class="ledger-grid">')
-    for s in ORDER:
+    for s in run.get("order", ORDER):
         d = per.get(s, {"turns": 0, "tokens": 0, "cost": 0.0, "cites": 0})
         w('<div class="lcell" style="--c:var(--%s)"><div class="who"><span class="dot"></span>%s'
           "</div><dl><dt>turns</dt><dd>%d</dd><dt>tokens</dt><dd>{:,}</dd>"
@@ -411,9 +423,9 @@ def render(run, tp=None):
     w("</div>")
     w('<p class="ledger-note">{} turns, {:,} tokens and {} web sources, for <strong>${:.2f}'
       "</strong> all in.</p>".format(tot["turns"], tot["tokens"], tot["cites"], tot["cost"]))
-    maxc = max([per.get(s, {}).get("cites", 0) for s in ORDER] + [1])
+    maxc = max([per.get(s, {}).get("cites", 0) for s in run.get("order", ORDER)] + [1])
     w('<div class="bars">')
-    for s in ORDER:
+    for s in run.get("order", ORDER):
         c = per.get(s, {}).get("cites", 0)
         w('<div class="bar-row" style="--c:var(--%s)"><span class="lbl">%s · sources</span>'
           '<span class="bar-track"><span class="bar-fill" style="width:%.1f%%"></span></span>'

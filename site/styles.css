@@ -3,8 +3,9 @@
   :root{
     --paper:#EFF1EC; --surface:#FAFBF8; --sunk:#E6E9E1;
     --ink:#191C19; --ink-2:#454B44; --ink-3:#646B62; --rule:#D5D9CE;
-    --opus:#8F4A18; --sol:#1C6B5C; --gemini:#3A5A99; --grok:#8A3A5E;
+    --opus:#8F4A18; --sol:#1C6B5C; --gemini:#3A5A99; --grok:#8A3A5E; --meta:#6A3FA0;
     --opus-wash:#F6EAE0; --sol-wash:#E2EFEB; --gemini-wash:#E5EAF5; --grok-wash:#F5E6EC;
+    --meta-wash:#EDE6F7;
     --brass:#6E6A3C; --focus:#1C6B5C;
     --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
     --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
@@ -14,16 +15,18 @@
     :root:not([data-theme="light"]){
       --paper:#14171A; --surface:#1B1F23; --sunk:#101316;
       --ink:#E7EAE4; --ink-2:#AEB5AC; --ink-3:#8C938B; --rule:#2C3238;
-      --opus:#E09550; --sol:#54B9A0; --gemini:#88A8E4; --grok:#D68BAD;
+      --opus:#E09550; --sol:#54B9A0; --gemini:#88A8E4; --grok:#D68BAD; --meta:#BFA3EC;
       --opus-wash:#2A2018; --sol-wash:#162925; --gemini-wash:#1A2130; --grok-wash:#2A1A22;
+      --meta-wash:#221A2E;
       --brass:#B5AE72; --focus:#54B9A0;
     }
   }
   :root[data-theme="dark"]{
     --paper:#14171A; --surface:#1B1F23; --sunk:#101316;
     --ink:#E7EAE4; --ink-2:#AEB5AC; --ink-3:#8C938B; --rule:#2C3238;
-    --opus:#E09550; --sol:#54B9A0; --gemini:#88A8E4; --grok:#D68BAD;
+    --opus:#E09550; --sol:#54B9A0; --gemini:#88A8E4; --grok:#D68BAD; --meta:#BFA3EC;
     --opus-wash:#2A2018; --sol-wash:#162925; --gemini-wash:#1A2130; --grok-wash:#2A1A22;
+    --meta-wash:#221A2E;
     --brass:#B5AE72; --focus:#54B9A0;
   }
 
@@ -307,6 +310,7 @@ body{min-height:100vh}
 .seat-sol{--c:var(--sol);--w:var(--sol-wash)}
 .seat-gemini{--c:var(--gemini);--w:var(--gemini-wash)}
 .seat-grok{--c:var(--grok);--w:var(--grok-wash)}
+.seat-meta{--c:var(--meta);--w:var(--meta-wash)}
 
 .ledger-strip{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:38px;padding-top:20px;
               border-top:1px solid var(--rule);font-family:var(--mono);font-size:11.5px;

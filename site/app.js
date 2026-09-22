@@ -1,4 +1,4 @@
-/* Room of Models — four frontier models from four companies, deliberating in your browser.
+/* Room of Models — frontier models from five companies, deliberating in your browser.
  *
  * This file is the whole product. It holds the orchestration that a human used to do by
  * hand between rounds: it asks each model alone, collects what they said, composes the
@@ -23,6 +23,7 @@ const SEATS = [
   { id: 'sol',    model: 'openai/gpt-5.6-sol',             short: 'GPT',    vendor: 'OpenAI',    label: 'GPT (OpenAI)' },
   { id: 'gemini', model: 'google/gemini-3.1-pro-preview',  short: 'Gemini', vendor: 'Google',    label: 'Gemini (Google)' },
   { id: 'grok',   model: 'x-ai/grok-4.6',                  short: 'Grok',   vendor: 'xAI',       label: 'Grok (xAI)' },
+  { id: 'meta',   model: 'meta/muse-spark-1.3',             short: 'Muse',   vendor: 'Meta',      label: 'Muse (Meta)' },
 ];
 const SEAT = Object.fromEntries(SEATS.map(s => [s.id, s]));
 const SYNTHESIZER = 'sol';   // deliberately not the model that wrote this page
@@ -33,8 +34,8 @@ const STAGES = [
           "kept from the others' text, but unaware there is a room at all, so nobody can posture, " +
           'defer, or leave a gap for someone else to fill.' },
   { key: 'critique', name: 'Critique', verb: 'Comparing perspectives',
-    note: 'Each model now reads the other three and responds. Web search stays on, so a shaky ' +
-          'number can be checked rather than deferred to.' },
+    note: 'Each model now reads what the others said and responds. Web search stays on, so a ' +
+          'shaky number can be checked rather than deferred to.' },
   { key: 'reconsider', name: 'Reconsider', verb: 'Challenging assumptions',
     note: 'Where everyone stands after being argued with, what moved them, and what they still ' +
           'hold. Direct questions to a named participant are allowed here.' },
@@ -59,10 +60,9 @@ thin. You have web search: use it to check a fact rather than asserting it from 
 concise — a few tight paragraphs at most.`;
 
 // From round two on, the room exists and the model is told who is in it.
-const systemRoom = (label, date) =>
-`You are ${label}, one of four AI models from four different companies sitting in one room and \
-thinking together. The room is Claude (Anthropic), GPT (OpenAI), Gemini (Google) and Grok (xAI). \
-Today is ${date}.
+const systemRoom = (label, date, roster) =>
+`You are ${label}, one of several AI models from different companies sitting in one room and \
+thinking together. The room is ${roster}. Today is ${date}.
 
 Talk like a person in a good conversation. Prose, your own voice, no headings, no bullet lists, \
 no section labels. Address the others directly by name when you are responding to them.
@@ -75,10 +75,11 @@ concise — a few tight paragraphs at most.`;
 
 const PROMPTS = {
   independent: q => q,
-  critique: others =>
-    `Something you were not told: three other AI models, from three other companies, were asked ` +
-    `that same question at the same moment, each of them alone and unaware of the rest — as were ` +
-    `you. Here is what each of them said:\n\n${others}\n\nRespond to them. Where do you agree, where do you think one of ` +
+  critique: (others, n) =>
+    `Something you were not told: ${n === 1 ? 'another AI model, from another company, was' :
+      n + ' other AI models, from ' + n + ' other companies, were'} asked that same question at ` +
+    `the same moment, each of them alone and unaware of the rest — as were you. Here is what ` +
+    `${n === 1 ? 'it' : 'each of them'} said:\n\n${others}\n\nRespond to them. Where do you agree, where do you think one of ` +
     `them is wrong or is missing something that matters, and what did someone surface that you ` +
     `didn't? Go check the specific factual claims that look shaky rather than smoothing them ` +
     `over. Name names.`,
@@ -101,6 +102,13 @@ const synthPrompt = (question, all, roster, absent) =>
   `high and where it isn't. If a claim was made and nobody checked it, say so rather than ` +
   `passing it on. Prose, no headings. Then, as the very last line and nothing after it, write: ` +
   `CONFIDENCE: <0.0-1.0>`;
+
+/** The room as a sentence, for the system prompt — built from who is seated. */
+function roomRoster() {
+  const names = state.team.map(id => SEAT[id].label);
+  return names.length === 1 ? names[0]
+    : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1];
+}
 
 // ---------------------------------------------------------------- state ----
 const $ = id => document.getElementById(id);
@@ -336,14 +344,17 @@ async function runStage(stage, idx, question, prevRound) {
       (state.run.memory[seat.id] = [{ role: 'system', content: systemBlind(state.run.date) }]);
     // The room only exists from the critique round on; until then this seat has never heard of it.
     if (stage.key !== 'independent') {
-      mem[0] = { role: 'system', content: systemRoom(seat.label, state.run.date) };
+      mem[0] = { role: 'system', content: systemRoom(seat.label, state.run.date, roomRoster()) };
     }
     // A seat whose round-1 call failed has no assistant turn, and so has never been
     // shown the question at all — restate it rather than ask it to critique in the dark.
     const unseen = mem.length === 1 ? `The question put to the room was: ${question}\n\n` : '';
     const content = stage.key === 'independent'
       ? PROMPTS.independent(question)
-      : unseen + PROMPTS[stage.key](othersBlock(prevRound, seat.id));
+      : unseen + (stage.key === 'critique'
+          ? PROMPTS.critique(othersBlock(prevRound, seat.id),
+                             prevRound.turns.filter(t => t.meta.ok && t.seat !== seat.id).length)
+          : PROMPTS[stage.key](othersBlock(prevRound, seat.id)));
     const send = mem.concat([{ role: 'user', content }]);
 
     return streamOne(seat.model, send, chunk => {

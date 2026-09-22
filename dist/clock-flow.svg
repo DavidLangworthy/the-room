@@ -1,19 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1250 1470" width="1250" height="1470" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, &quot;SF Pro Text&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1430 1470" width="1430" height="1470" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, &quot;SF Pro Text&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif">
 <title id="t">How one question becomes one answer in Room of Models</title>
-<desc id="d">Four AI models answer a question independently in round one with no connections between them, then exchange answers across three further rounds, and the whole transcript flows into a single synthesis node.</desc>
+<desc id="d">Five AI models answer a question independently in round one with no connections between them, then exchange answers across three further rounds, and the whole transcript flows into a single synthesis node.</desc>
 <style>
   :root{
     --paper:#EFF1EC; --surface:#FAFBF8; --ink:#191C19; --ink2:#454B44; --ink3:#646B62;
     --rule:#D5D9CE; --brass:#6E6A3C;
-    --opus:#8F4A18; --sol:#1C6B5C; --gemini:#3A5A99; --grok:#8A3A5E;
-    --opusW:#F6EAE0; --solW:#E2EFEB; --geminiW:#E5EAF5; --grokW:#F5E6EC;
+    --opus:#8F4A18; --sol:#1C6B5C; --gemini:#3A5A99; --grok:#8A3A5E; --meta:#6A3FA0;
+    --opusW:#F6EAE0; --solW:#E2EFEB; --geminiW:#E5EAF5; --grokW:#F5E6EC; --metaW:#EDE6F7;
   }
   @media (prefers-color-scheme:dark){
     :root{
       --paper:#14171A; --surface:#1B1F23; --ink:#E7EAE4; --ink2:#AEB5AC; --ink3:#8C938B;
       --rule:#2C3238; --brass:#B5AE72;
-      --opus:#E09550; --sol:#54B9A0; --gemini:#88A8E4; --grok:#D68BAD;
-      --opusW:#2A2018; --solW:#162925; --geminiW:#1A2130; --grokW:#2A1A22;
+      --opus:#E09550; --sol:#54B9A0; --gemini:#88A8E4; --grok:#D68BAD; --meta:#BFA3EC;
+      --opusW:#2A2018; --solW:#162925; --geminiW:#1A2130; --grokW:#2A1A22; --metaW:#221A2E;
     }
   }
   .bg{fill:var(--paper)}
@@ -40,11 +40,11 @@
   .qedge{stroke:var(--brass);stroke-width:1.5;fill:none;opacity:.75}
   .divider{stroke:var(--rule);stroke-width:1}
   .legbox{fill:var(--surface);stroke:var(--rule);stroke-width:1}
-  .opus{stroke:var(--opus)} .sol{stroke:var(--sol)}
+  .opus{stroke:var(--opus)} .sol{stroke:var(--sol)} .meta{stroke:var(--meta)}
   .gemini{stroke:var(--gemini)} .grok{stroke:var(--grok)}
-  .fopus{fill:var(--opus)} .fsol{fill:var(--sol)}
+  .fopus{fill:var(--opus)} .fsol{fill:var(--sol)} .fmeta{fill:var(--meta)}
   .fgemini{fill:var(--gemini)} .fgrok{fill:var(--grok)}
-  .wopus{fill:var(--opusW)} .wsol{fill:var(--solW)}
+  .wopus{fill:var(--opusW)} .wsol{fill:var(--solW)} .wmeta{fill:var(--metaW)}
   .wgemini{fill:var(--geminiW)} .wgrok{fill:var(--grokW)}
 </style>
 <defs>
@@ -52,15 +52,16 @@
 <marker id="a-sol" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L7,4 L0,7 z" class="fsol"/></marker>
 <marker id="a-gemini" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L7,4 L0,7 z" class="fgemini"/></marker>
 <marker id="a-grok" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L7,4 L0,7 z" class="fgrok"/></marker>
+<marker id="a-meta" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L7,4 L0,7 z" class="fmeta"/></marker>
 <marker id="a-q" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L7,4 L0,7 z" fill="var(--brass)"/></marker>
 <marker id="a-n" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L7,4 L0,7 z" fill="var(--ink3)"/></marker>
 </defs>
-<rect class="bg" width="1250" height="1470"/>
+<rect class="bg" width="1430" height="1470"/>
 <text x="44.0" y="62.0" class="h1" text-anchor="start">How one question becomes one answer</text>
-<text x="44.0" y="88.0" class="h2" text-anchor="start">Four frontier models, four rounds, one synthesis — the shape of a single run.</text>
-<line class="divider" x1="44" y1="108" x2="1206" y2="108"/>
-<rect class="qcard" x="375.5" y="149.0" width="470" height="54" rx="27"/>
-<text x="610.5" y="181.0" class="qtext" text-anchor="middle">Your question</text>
+<text x="44.0" y="88.0" class="h2" text-anchor="start">Five frontier models, four rounds, one synthesis — the shape of a single run.</text>
+<line class="divider" x1="44" y1="108" x2="1386" y2="108"/>
+<rect class="qcard" x="431.0" y="149.0" width="470" height="54" rx="27"/>
+<text x="666.0" y="181.0" class="qtext" text-anchor="middle">Your question</text>
 <text x="44.0" y="170.0" class="rnum" text-anchor="start">INPUT</text>
 <text x="44.0" y="188.0" class="rnote" text-anchor="start">one question</text>
 <text x="44.0" y="298.0" class="rnum" text-anchor="start">01</text>
@@ -69,177 +70,220 @@
 <text x="44.0" y="350.0" class="rnote" text-anchor="start">question alone, unaware</text>
 <text x="44.0" y="364.0" class="rnote" text-anchor="start">that anyone else exists.</text>
 <text x="44.0" y="392.0" class="callb" text-anchor="start">No lines run between</text>
-<text x="44.0" y="406.0" class="callb" text-anchor="start">these four. Round one</text>
+<text x="44.0" y="406.0" class="callb" text-anchor="start">these five. Round one</text>
 <text x="44.0" y="420.0" class="callb" text-anchor="start">is blind.</text>
-<rect class="card wopus" x="270.0" y="292.0" width="150" height="56" rx="10"/>
-<rect class="fopus" x="270.0" y="292.0" width="3.5" height="56" rx="1.75"/>
-<text x="345.0" y="318.0" class="nname" text-anchor="middle">Claude</text>
-<text x="345.0" y="335.0" class="nvend" text-anchor="middle">ANTHROPIC</text>
-<rect class="card wsol" x="447.0" y="292.0" width="150" height="56" rx="10"/>
-<rect class="fsol" x="447.0" y="292.0" width="3.5" height="56" rx="1.75"/>
-<text x="522.0" y="318.0" class="nname" text-anchor="middle">GPT</text>
-<text x="522.0" y="335.0" class="nvend" text-anchor="middle">OPENAI</text>
-<rect class="card wgemini" x="624.0" y="292.0" width="150" height="56" rx="10"/>
-<rect class="fgemini" x="624.0" y="292.0" width="3.5" height="56" rx="1.75"/>
-<text x="699.0" y="318.0" class="nname" text-anchor="middle">Gemini</text>
-<text x="699.0" y="335.0" class="nvend" text-anchor="middle">GOOGLE</text>
-<rect class="card wgrok" x="801.0" y="292.0" width="150" height="56" rx="10"/>
-<rect class="fgrok" x="801.0" y="292.0" width="3.5" height="56" rx="1.75"/>
-<text x="876.0" y="318.0" class="nname" text-anchor="middle">Grok</text>
-<text x="876.0" y="335.0" class="nvend" text-anchor="middle">XAI</text>
+<rect class="card wopus" x="255.0" y="292.0" width="150" height="56" rx="10"/>
+<rect class="fopus" x="255.0" y="292.0" width="3.5" height="56" rx="1.75"/>
+<text x="330.0" y="318.0" class="nname" text-anchor="middle">Claude</text>
+<text x="330.0" y="335.0" class="nvend" text-anchor="middle">ANTHROPIC</text>
+<rect class="card wsol" x="423.0" y="292.0" width="150" height="56" rx="10"/>
+<rect class="fsol" x="423.0" y="292.0" width="3.5" height="56" rx="1.75"/>
+<text x="498.0" y="318.0" class="nname" text-anchor="middle">GPT</text>
+<text x="498.0" y="335.0" class="nvend" text-anchor="middle">OPENAI</text>
+<rect class="card wgemini" x="591.0" y="292.0" width="150" height="56" rx="10"/>
+<rect class="fgemini" x="591.0" y="292.0" width="3.5" height="56" rx="1.75"/>
+<text x="666.0" y="318.0" class="nname" text-anchor="middle">Gemini</text>
+<text x="666.0" y="335.0" class="nvend" text-anchor="middle">GOOGLE</text>
+<rect class="card wgrok" x="759.0" y="292.0" width="150" height="56" rx="10"/>
+<rect class="fgrok" x="759.0" y="292.0" width="3.5" height="56" rx="1.75"/>
+<text x="834.0" y="318.0" class="nname" text-anchor="middle">Grok</text>
+<text x="834.0" y="335.0" class="nvend" text-anchor="middle">XAI</text>
+<rect class="card wmeta" x="927.0" y="292.0" width="150" height="56" rx="10"/>
+<rect class="fmeta" x="927.0" y="292.0" width="3.5" height="56" rx="1.75"/>
+<text x="1002.0" y="318.0" class="nname" text-anchor="middle">Muse</text>
+<text x="1002.0" y="335.0" class="nvend" text-anchor="middle">META</text>
 <text x="44.0" y="518.0" class="rnum" text-anchor="start">02</text>
 <text x="44.0" y="536.0" class="rname" text-anchor="start">CRITIQUE</text>
-<text x="44.0" y="556.0" class="rnote" text-anchor="start">It now reads the other</text>
-<text x="44.0" y="570.0" class="rnote" text-anchor="start">three and responds —</text>
+<text x="44.0" y="556.0" class="rnote" text-anchor="start">It now reads what the</text>
+<text x="44.0" y="570.0" class="rnote" text-anchor="start">others said and responds —</text>
 <text x="44.0" y="584.0" class="rnote" text-anchor="start">checking, not deferring.</text>
 <text x="44.0" y="612.0" class="callb" text-anchor="start">From here on each model</text>
-<text x="44.0" y="626.0" class="callb" text-anchor="start">sees the other three,</text>
+<text x="44.0" y="626.0" class="callb" text-anchor="start">sees every other one,</text>
 <text x="44.0" y="640.0" class="callb" text-anchor="start">and never its own.</text>
-<rect class="card wopus" x="270.0" y="512.0" width="150" height="56" rx="10"/>
-<rect class="fopus" x="270.0" y="512.0" width="3.5" height="56" rx="1.75"/>
-<text x="345.0" y="538.0" class="nname" text-anchor="middle">Claude</text>
-<text x="345.0" y="555.0" class="nvend" text-anchor="middle">ANTHROPIC</text>
-<rect class="card wsol" x="447.0" y="512.0" width="150" height="56" rx="10"/>
-<rect class="fsol" x="447.0" y="512.0" width="3.5" height="56" rx="1.75"/>
-<text x="522.0" y="538.0" class="nname" text-anchor="middle">GPT</text>
-<text x="522.0" y="555.0" class="nvend" text-anchor="middle">OPENAI</text>
-<rect class="card wgemini" x="624.0" y="512.0" width="150" height="56" rx="10"/>
-<rect class="fgemini" x="624.0" y="512.0" width="3.5" height="56" rx="1.75"/>
-<text x="699.0" y="538.0" class="nname" text-anchor="middle">Gemini</text>
-<text x="699.0" y="555.0" class="nvend" text-anchor="middle">GOOGLE</text>
-<rect class="card wgrok" x="801.0" y="512.0" width="150" height="56" rx="10"/>
-<rect class="fgrok" x="801.0" y="512.0" width="3.5" height="56" rx="1.75"/>
-<text x="876.0" y="538.0" class="nname" text-anchor="middle">Grok</text>
-<text x="876.0" y="555.0" class="nvend" text-anchor="middle">XAI</text>
+<rect class="card wopus" x="255.0" y="512.0" width="150" height="56" rx="10"/>
+<rect class="fopus" x="255.0" y="512.0" width="3.5" height="56" rx="1.75"/>
+<text x="330.0" y="538.0" class="nname" text-anchor="middle">Claude</text>
+<text x="330.0" y="555.0" class="nvend" text-anchor="middle">ANTHROPIC</text>
+<rect class="card wsol" x="423.0" y="512.0" width="150" height="56" rx="10"/>
+<rect class="fsol" x="423.0" y="512.0" width="3.5" height="56" rx="1.75"/>
+<text x="498.0" y="538.0" class="nname" text-anchor="middle">GPT</text>
+<text x="498.0" y="555.0" class="nvend" text-anchor="middle">OPENAI</text>
+<rect class="card wgemini" x="591.0" y="512.0" width="150" height="56" rx="10"/>
+<rect class="fgemini" x="591.0" y="512.0" width="3.5" height="56" rx="1.75"/>
+<text x="666.0" y="538.0" class="nname" text-anchor="middle">Gemini</text>
+<text x="666.0" y="555.0" class="nvend" text-anchor="middle">GOOGLE</text>
+<rect class="card wgrok" x="759.0" y="512.0" width="150" height="56" rx="10"/>
+<rect class="fgrok" x="759.0" y="512.0" width="3.5" height="56" rx="1.75"/>
+<text x="834.0" y="538.0" class="nname" text-anchor="middle">Grok</text>
+<text x="834.0" y="555.0" class="nvend" text-anchor="middle">XAI</text>
+<rect class="card wmeta" x="927.0" y="512.0" width="150" height="56" rx="10"/>
+<rect class="fmeta" x="927.0" y="512.0" width="3.5" height="56" rx="1.75"/>
+<text x="1002.0" y="538.0" class="nname" text-anchor="middle">Muse</text>
+<text x="1002.0" y="555.0" class="nvend" text-anchor="middle">META</text>
 <text x="44.0" y="738.0" class="rnum" text-anchor="start">03</text>
 <text x="44.0" y="756.0" class="rname" text-anchor="start">RECONSIDER</text>
 <text x="44.0" y="776.0" class="rnote" text-anchor="start">What moved them, what</text>
 <text x="44.0" y="790.0" class="rnote" text-anchor="start">they still hold, what is</text>
 <text x="44.0" y="804.0" class="rnote" text-anchor="start">still unresolved.</text>
-<rect class="card wopus" x="270.0" y="732.0" width="150" height="56" rx="10"/>
-<rect class="fopus" x="270.0" y="732.0" width="3.5" height="56" rx="1.75"/>
-<text x="345.0" y="758.0" class="nname" text-anchor="middle">Claude</text>
-<text x="345.0" y="775.0" class="nvend" text-anchor="middle">ANTHROPIC</text>
-<rect class="card wsol" x="447.0" y="732.0" width="150" height="56" rx="10"/>
-<rect class="fsol" x="447.0" y="732.0" width="3.5" height="56" rx="1.75"/>
-<text x="522.0" y="758.0" class="nname" text-anchor="middle">GPT</text>
-<text x="522.0" y="775.0" class="nvend" text-anchor="middle">OPENAI</text>
-<rect class="card wgemini" x="624.0" y="732.0" width="150" height="56" rx="10"/>
-<rect class="fgemini" x="624.0" y="732.0" width="3.5" height="56" rx="1.75"/>
-<text x="699.0" y="758.0" class="nname" text-anchor="middle">Gemini</text>
-<text x="699.0" y="775.0" class="nvend" text-anchor="middle">GOOGLE</text>
-<rect class="card wgrok" x="801.0" y="732.0" width="150" height="56" rx="10"/>
-<rect class="fgrok" x="801.0" y="732.0" width="3.5" height="56" rx="1.75"/>
-<text x="876.0" y="758.0" class="nname" text-anchor="middle">Grok</text>
-<text x="876.0" y="775.0" class="nvend" text-anchor="middle">XAI</text>
+<rect class="card wopus" x="255.0" y="732.0" width="150" height="56" rx="10"/>
+<rect class="fopus" x="255.0" y="732.0" width="3.5" height="56" rx="1.75"/>
+<text x="330.0" y="758.0" class="nname" text-anchor="middle">Claude</text>
+<text x="330.0" y="775.0" class="nvend" text-anchor="middle">ANTHROPIC</text>
+<rect class="card wsol" x="423.0" y="732.0" width="150" height="56" rx="10"/>
+<rect class="fsol" x="423.0" y="732.0" width="3.5" height="56" rx="1.75"/>
+<text x="498.0" y="758.0" class="nname" text-anchor="middle">GPT</text>
+<text x="498.0" y="775.0" class="nvend" text-anchor="middle">OPENAI</text>
+<rect class="card wgemini" x="591.0" y="732.0" width="150" height="56" rx="10"/>
+<rect class="fgemini" x="591.0" y="732.0" width="3.5" height="56" rx="1.75"/>
+<text x="666.0" y="758.0" class="nname" text-anchor="middle">Gemini</text>
+<text x="666.0" y="775.0" class="nvend" text-anchor="middle">GOOGLE</text>
+<rect class="card wgrok" x="759.0" y="732.0" width="150" height="56" rx="10"/>
+<rect class="fgrok" x="759.0" y="732.0" width="3.5" height="56" rx="1.75"/>
+<text x="834.0" y="758.0" class="nname" text-anchor="middle">Grok</text>
+<text x="834.0" y="775.0" class="nvend" text-anchor="middle">XAI</text>
+<rect class="card wmeta" x="927.0" y="732.0" width="150" height="56" rx="10"/>
+<rect class="fmeta" x="927.0" y="732.0" width="3.5" height="56" rx="1.75"/>
+<text x="1002.0" y="758.0" class="nname" text-anchor="middle">Muse</text>
+<text x="1002.0" y="775.0" class="nvend" text-anchor="middle">META</text>
 <text x="44.0" y="958.0" class="rnum" text-anchor="start">04</text>
 <text x="44.0" y="976.0" class="rname" text-anchor="start">EXCHANGE</text>
 <text x="44.0" y="996.0" class="rnote" text-anchor="start">Questions put by name get</text>
 <text x="44.0" y="1010.0" class="rnote" text-anchor="start">answered. Each says the</text>
 <text x="44.0" y="1024.0" class="rnote" text-anchor="start">one thing it wants kept.</text>
-<rect class="card wopus" x="270.0" y="952.0" width="150" height="56" rx="10"/>
-<rect class="fopus" x="270.0" y="952.0" width="3.5" height="56" rx="1.75"/>
-<text x="345.0" y="978.0" class="nname" text-anchor="middle">Claude</text>
-<text x="345.0" y="995.0" class="nvend" text-anchor="middle">ANTHROPIC</text>
-<rect class="card wsol" x="447.0" y="952.0" width="150" height="56" rx="10"/>
-<rect class="fsol" x="447.0" y="952.0" width="3.5" height="56" rx="1.75"/>
-<text x="522.0" y="978.0" class="nname" text-anchor="middle">GPT</text>
-<text x="522.0" y="995.0" class="nvend" text-anchor="middle">OPENAI</text>
-<rect class="card wgemini" x="624.0" y="952.0" width="150" height="56" rx="10"/>
-<rect class="fgemini" x="624.0" y="952.0" width="3.5" height="56" rx="1.75"/>
-<text x="699.0" y="978.0" class="nname" text-anchor="middle">Gemini</text>
-<text x="699.0" y="995.0" class="nvend" text-anchor="middle">GOOGLE</text>
-<rect class="card wgrok" x="801.0" y="952.0" width="150" height="56" rx="10"/>
-<rect class="fgrok" x="801.0" y="952.0" width="3.5" height="56" rx="1.75"/>
-<text x="876.0" y="978.0" class="nname" text-anchor="middle">Grok</text>
-<text x="876.0" y="995.0" class="nvend" text-anchor="middle">XAI</text>
-<path class="qedge" marker-end="url(#a-q)" d="M610.5,203.0 C610.5,255.0 345.0,236.0 345.0,285.0"/>
-<path class="qedge" marker-end="url(#a-q)" d="M610.5,203.0 C610.5,255.0 522.0,236.0 522.0,285.0"/>
-<path class="qedge" marker-end="url(#a-q)" d="M610.5,203.0 C610.5,255.0 699.0,236.0 699.0,285.0"/>
-<path class="qedge" marker-end="url(#a-q)" d="M610.5,203.0 C610.5,255.0 876.0,236.0 876.0,285.0"/>
-<path class="cross opus" marker-end="url(#a-opus)" d="M319.0,348.0 C319.0,416.9 470.0,443.1 470.0,505.0"/>
-<path class="cross opus" marker-end="url(#a-opus)" d="M371.0,348.0 C371.0,416.9 647.0,443.1 647.0,505.0"/>
-<path class="cross opus" marker-end="url(#a-opus)" d="M397.0,348.0 C397.0,416.9 824.0,443.1 824.0,505.0"/>
-<path class="cross sol" marker-end="url(#a-sol)" d="M470.0,348.0 C470.0,416.9 319.0,443.1 319.0,505.0"/>
-<path class="cross sol" marker-end="url(#a-sol)" d="M548.0,348.0 C548.0,416.9 673.0,443.1 673.0,505.0"/>
-<path class="cross sol" marker-end="url(#a-sol)" d="M574.0,348.0 C574.0,416.9 850.0,443.1 850.0,505.0"/>
-<path class="cross gemini" marker-end="url(#a-gemini)" d="M647.0,348.0 C647.0,416.9 371.0,443.1 371.0,505.0"/>
-<path class="cross gemini" marker-end="url(#a-gemini)" d="M673.0,348.0 C673.0,416.9 548.0,443.1 548.0,505.0"/>
-<path class="cross gemini" marker-end="url(#a-gemini)" d="M751.0,348.0 C751.0,416.9 902.0,443.1 902.0,505.0"/>
-<path class="cross grok" marker-end="url(#a-grok)" d="M824.0,348.0 C824.0,416.9 397.0,443.1 397.0,505.0"/>
-<path class="cross grok" marker-end="url(#a-grok)" d="M850.0,348.0 C850.0,416.9 574.0,443.1 574.0,505.0"/>
-<path class="cross grok" marker-end="url(#a-grok)" d="M902.0,348.0 C902.0,416.9 751.0,443.1 751.0,505.0"/>
-<path class="mem opus" marker-end="url(#a-opus)" d="M345,348.0 L345,505.0"/>
-<path class="mem sol" marker-end="url(#a-sol)" d="M522,348.0 L522,505.0"/>
-<path class="mem gemini" marker-end="url(#a-gemini)" d="M699,348.0 L699,505.0"/>
-<path class="mem grok" marker-end="url(#a-grok)" d="M876,348.0 L876,505.0"/>
-<path class="cross opus" marker-end="url(#a-opus)" d="M319.0,568.0 C319.0,636.9 470.0,663.1 470.0,725.0"/>
-<path class="cross opus" marker-end="url(#a-opus)" d="M371.0,568.0 C371.0,636.9 647.0,663.1 647.0,725.0"/>
-<path class="cross opus" marker-end="url(#a-opus)" d="M397.0,568.0 C397.0,636.9 824.0,663.1 824.0,725.0"/>
-<path class="cross sol" marker-end="url(#a-sol)" d="M470.0,568.0 C470.0,636.9 319.0,663.1 319.0,725.0"/>
-<path class="cross sol" marker-end="url(#a-sol)" d="M548.0,568.0 C548.0,636.9 673.0,663.1 673.0,725.0"/>
-<path class="cross sol" marker-end="url(#a-sol)" d="M574.0,568.0 C574.0,636.9 850.0,663.1 850.0,725.0"/>
-<path class="cross gemini" marker-end="url(#a-gemini)" d="M647.0,568.0 C647.0,636.9 371.0,663.1 371.0,725.0"/>
-<path class="cross gemini" marker-end="url(#a-gemini)" d="M673.0,568.0 C673.0,636.9 548.0,663.1 548.0,725.0"/>
-<path class="cross gemini" marker-end="url(#a-gemini)" d="M751.0,568.0 C751.0,636.9 902.0,663.1 902.0,725.0"/>
-<path class="cross grok" marker-end="url(#a-grok)" d="M824.0,568.0 C824.0,636.9 397.0,663.1 397.0,725.0"/>
-<path class="cross grok" marker-end="url(#a-grok)" d="M850.0,568.0 C850.0,636.9 574.0,663.1 574.0,725.0"/>
-<path class="cross grok" marker-end="url(#a-grok)" d="M902.0,568.0 C902.0,636.9 751.0,663.1 751.0,725.0"/>
-<path class="mem opus" marker-end="url(#a-opus)" d="M345,568.0 L345,725.0"/>
-<path class="mem sol" marker-end="url(#a-sol)" d="M522,568.0 L522,725.0"/>
-<path class="mem gemini" marker-end="url(#a-gemini)" d="M699,568.0 L699,725.0"/>
-<path class="mem grok" marker-end="url(#a-grok)" d="M876,568.0 L876,725.0"/>
-<path class="cross opus" marker-end="url(#a-opus)" d="M319.0,788.0 C319.0,856.9 470.0,883.1 470.0,945.0"/>
-<path class="cross opus" marker-end="url(#a-opus)" d="M371.0,788.0 C371.0,856.9 647.0,883.1 647.0,945.0"/>
-<path class="cross opus" marker-end="url(#a-opus)" d="M397.0,788.0 C397.0,856.9 824.0,883.1 824.0,945.0"/>
-<path class="cross sol" marker-end="url(#a-sol)" d="M470.0,788.0 C470.0,856.9 319.0,883.1 319.0,945.0"/>
-<path class="cross sol" marker-end="url(#a-sol)" d="M548.0,788.0 C548.0,856.9 673.0,883.1 673.0,945.0"/>
-<path class="cross sol" marker-end="url(#a-sol)" d="M574.0,788.0 C574.0,856.9 850.0,883.1 850.0,945.0"/>
-<path class="cross gemini" marker-end="url(#a-gemini)" d="M647.0,788.0 C647.0,856.9 371.0,883.1 371.0,945.0"/>
-<path class="cross gemini" marker-end="url(#a-gemini)" d="M673.0,788.0 C673.0,856.9 548.0,883.1 548.0,945.0"/>
-<path class="cross gemini" marker-end="url(#a-gemini)" d="M751.0,788.0 C751.0,856.9 902.0,883.1 902.0,945.0"/>
-<path class="cross grok" marker-end="url(#a-grok)" d="M824.0,788.0 C824.0,856.9 397.0,883.1 397.0,945.0"/>
-<path class="cross grok" marker-end="url(#a-grok)" d="M850.0,788.0 C850.0,856.9 574.0,883.1 574.0,945.0"/>
-<path class="cross grok" marker-end="url(#a-grok)" d="M902.0,788.0 C902.0,856.9 751.0,883.1 751.0,945.0"/>
-<path class="mem opus" marker-end="url(#a-opus)" d="M345,788.0 L345,945.0"/>
-<path class="mem sol" marker-end="url(#a-sol)" d="M522,788.0 L522,945.0"/>
-<path class="mem gemini" marker-end="url(#a-gemini)" d="M699,788.0 L699,945.0"/>
-<path class="mem grok" marker-end="url(#a-grok)" d="M876,788.0 L876,945.0"/>
-<path class="rail" d="M1056,320 L1056,1050 C1056,1120 876,1130 801.0,1148.0"/>
-<path class="tap" marker-end="url(#a-n)" d="M955.0,320 L1052,320"/>
-<circle cx="1056" cy="320" r="3" fill="var(--ink3)" opacity=".55"/>
-<path class="tap" marker-end="url(#a-n)" d="M955.0,540 L1052,540"/>
-<circle cx="1056" cy="540" r="3" fill="var(--ink3)" opacity=".55"/>
-<path class="tap" marker-end="url(#a-n)" d="M955.0,760 L1052,760"/>
-<circle cx="1056" cy="760" r="3" fill="var(--ink3)" opacity=".55"/>
-<path class="tap" marker-end="url(#a-n)" d="M955.0,980 L1052,980"/>
-<circle cx="1056" cy="980" r="3" fill="var(--ink3)" opacity=".55"/>
-<text x="1050.0" y="142.0" class="rname" text-anchor="start">THE TRANSCRIPT</text>
-<text x="1050.0" y="164.0" class="rnote" text-anchor="start">Every turn joins it,</text>
-<text x="1050.0" y="178.0" class="rnote" text-anchor="start">in order. The</text>
-<text x="1050.0" y="192.0" class="rnote" text-anchor="start">synthesizer reads</text>
-<text x="1050.0" y="206.0" class="rnote" text-anchor="start">all of it.</text>
-<rect class="card" x="435.0" y="1154.0" width="380" height="92" rx="14" stroke="var(--sol)" stroke-width="1.6"/>
-<rect class="fsol" x="435.0" y="1154.0" width="4" height="92" rx="2"/>
-<text x="625.0" y="1180.0" class="rname" text-anchor="middle">SYNTHESIS</text>
-<text x="625.0" y="1202.0" class="nname" text-anchor="middle">GPT (OpenAI)</text>
-<text x="625.0" y="1222.0" class="rnote" text-anchor="middle">fresh context — it reads the record, it does not carry its own side</text>
+<rect class="card wopus" x="255.0" y="952.0" width="150" height="56" rx="10"/>
+<rect class="fopus" x="255.0" y="952.0" width="3.5" height="56" rx="1.75"/>
+<text x="330.0" y="978.0" class="nname" text-anchor="middle">Claude</text>
+<text x="330.0" y="995.0" class="nvend" text-anchor="middle">ANTHROPIC</text>
+<rect class="card wsol" x="423.0" y="952.0" width="150" height="56" rx="10"/>
+<rect class="fsol" x="423.0" y="952.0" width="3.5" height="56" rx="1.75"/>
+<text x="498.0" y="978.0" class="nname" text-anchor="middle">GPT</text>
+<text x="498.0" y="995.0" class="nvend" text-anchor="middle">OPENAI</text>
+<rect class="card wgemini" x="591.0" y="952.0" width="150" height="56" rx="10"/>
+<rect class="fgemini" x="591.0" y="952.0" width="3.5" height="56" rx="1.75"/>
+<text x="666.0" y="978.0" class="nname" text-anchor="middle">Gemini</text>
+<text x="666.0" y="995.0" class="nvend" text-anchor="middle">GOOGLE</text>
+<rect class="card wgrok" x="759.0" y="952.0" width="150" height="56" rx="10"/>
+<rect class="fgrok" x="759.0" y="952.0" width="3.5" height="56" rx="1.75"/>
+<text x="834.0" y="978.0" class="nname" text-anchor="middle">Grok</text>
+<text x="834.0" y="995.0" class="nvend" text-anchor="middle">XAI</text>
+<rect class="card wmeta" x="927.0" y="952.0" width="150" height="56" rx="10"/>
+<rect class="fmeta" x="927.0" y="952.0" width="3.5" height="56" rx="1.75"/>
+<text x="1002.0" y="978.0" class="nname" text-anchor="middle">Muse</text>
+<text x="1002.0" y="995.0" class="nvend" text-anchor="middle">META</text>
+<path class="qedge" marker-end="url(#a-q)" d="M666.0,203.0 C666.0,255.0 330.0,236.0 330.0,285.0"/>
+<path class="qedge" marker-end="url(#a-q)" d="M666.0,203.0 C666.0,255.0 498.0,236.0 498.0,285.0"/>
+<path class="qedge" marker-end="url(#a-q)" d="M666.0,203.0 C666.0,255.0 666.0,236.0 666.0,285.0"/>
+<path class="qedge" marker-end="url(#a-q)" d="M666.0,203.0 C666.0,255.0 834.0,236.0 834.0,285.0"/>
+<path class="cross opus" marker-end="url(#a-opus)" d="M283.9,348.0 C283.9,416.9 451.9,443.1 451.9,505.0"/>
+<path class="cross opus" marker-end="url(#a-opus)" d="M314.6,348.0 C314.6,416.9 619.9,443.1 619.9,505.0"/>
+<path class="cross opus" marker-end="url(#a-opus)" d="M345.4,348.0 C345.4,416.9 787.9,443.1 787.9,505.0"/>
+<path class="cross opus" marker-end="url(#a-opus)" d="M376.1,348.0 C376.1,416.9 955.9,443.1 955.9,505.0"/>
+<path class="cross sol" marker-end="url(#a-sol)" d="M451.9,348.0 C451.9,416.9 283.9,443.1 283.9,505.0"/>
+<path class="cross sol" marker-end="url(#a-sol)" d="M482.6,348.0 C482.6,416.9 650.6,443.1 650.6,505.0"/>
+<path class="cross sol" marker-end="url(#a-sol)" d="M513.4,348.0 C513.4,416.9 818.6,443.1 818.6,505.0"/>
+<path class="cross sol" marker-end="url(#a-sol)" d="M544.1,348.0 C544.1,416.9 986.6,443.1 986.6,505.0"/>
+<path class="cross gemini" marker-end="url(#a-gemini)" d="M619.9,348.0 C619.9,416.9 314.6,443.1 314.6,505.0"/>
+<path class="cross gemini" marker-end="url(#a-gemini)" d="M650.6,348.0 C650.6,416.9 482.6,443.1 482.6,505.0"/>
+<path class="cross gemini" marker-end="url(#a-gemini)" d="M681.4,348.0 C681.4,416.9 849.4,443.1 849.4,505.0"/>
+<path class="cross gemini" marker-end="url(#a-gemini)" d="M712.1,348.0 C712.1,416.9 1017.4,443.1 1017.4,505.0"/>
+<path class="cross grok" marker-end="url(#a-grok)" d="M787.9,348.0 C787.9,416.9 345.4,443.1 345.4,505.0"/>
+<path class="cross grok" marker-end="url(#a-grok)" d="M818.6,348.0 C818.6,416.9 513.4,443.1 513.4,505.0"/>
+<path class="cross grok" marker-end="url(#a-grok)" d="M849.4,348.0 C849.4,416.9 681.4,443.1 681.4,505.0"/>
+<path class="cross grok" marker-end="url(#a-grok)" d="M880.1,348.0 C880.1,416.9 1048.1,443.1 1048.1,505.0"/>
+<path class="cross meta" marker-end="url(#a-meta)" d="M955.9,348.0 C955.9,416.9 376.1,443.1 376.1,505.0"/>
+<path class="cross meta" marker-end="url(#a-meta)" d="M986.6,348.0 C986.6,416.9 544.1,443.1 544.1,505.0"/>
+<path class="cross meta" marker-end="url(#a-meta)" d="M1017.4,348.0 C1017.4,416.9 712.1,443.1 712.1,505.0"/>
+<path class="cross meta" marker-end="url(#a-meta)" d="M1048.1,348.0 C1048.1,416.9 880.1,443.1 880.1,505.0"/>
+<path class="mem opus" marker-end="url(#a-opus)" d="M330,348.0 L330,505.0"/>
+<path class="mem sol" marker-end="url(#a-sol)" d="M498,348.0 L498,505.0"/>
+<path class="mem gemini" marker-end="url(#a-gemini)" d="M666,348.0 L666,505.0"/>
+<path class="mem grok" marker-end="url(#a-grok)" d="M834,348.0 L834,505.0"/>
+<path class="mem meta" marker-end="url(#a-meta)" d="M1002,348.0 L1002,505.0"/>
+<path class="cross opus" marker-end="url(#a-opus)" d="M283.9,568.0 C283.9,636.9 451.9,663.1 451.9,725.0"/>
+<path class="cross opus" marker-end="url(#a-opus)" d="M314.6,568.0 C314.6,636.9 619.9,663.1 619.9,725.0"/>
+<path class="cross opus" marker-end="url(#a-opus)" d="M345.4,568.0 C345.4,636.9 787.9,663.1 787.9,725.0"/>
+<path class="cross opus" marker-end="url(#a-opus)" d="M376.1,568.0 C376.1,636.9 955.9,663.1 955.9,725.0"/>
+<path class="cross sol" marker-end="url(#a-sol)" d="M451.9,568.0 C451.9,636.9 283.9,663.1 283.9,725.0"/>
+<path class="cross sol" marker-end="url(#a-sol)" d="M482.6,568.0 C482.6,636.9 650.6,663.1 650.6,725.0"/>
+<path class="cross sol" marker-end="url(#a-sol)" d="M513.4,568.0 C513.4,636.9 818.6,663.1 818.6,725.0"/>
+<path class="cross sol" marker-end="url(#a-sol)" d="M544.1,568.0 C544.1,636.9 986.6,663.1 986.6,725.0"/>
+<path class="cross gemini" marker-end="url(#a-gemini)" d="M619.9,568.0 C619.9,636.9 314.6,663.1 314.6,725.0"/>
+<path class="cross gemini" marker-end="url(#a-gemini)" d="M650.6,568.0 C650.6,636.9 482.6,663.1 482.6,725.0"/>
+<path class="cross gemini" marker-end="url(#a-gemini)" d="M681.4,568.0 C681.4,636.9 849.4,663.1 849.4,725.0"/>
+<path class="cross gemini" marker-end="url(#a-gemini)" d="M712.1,568.0 C712.1,636.9 1017.4,663.1 1017.4,725.0"/>
+<path class="cross grok" marker-end="url(#a-grok)" d="M787.9,568.0 C787.9,636.9 345.4,663.1 345.4,725.0"/>
+<path class="cross grok" marker-end="url(#a-grok)" d="M818.6,568.0 C818.6,636.9 513.4,663.1 513.4,725.0"/>
+<path class="cross grok" marker-end="url(#a-grok)" d="M849.4,568.0 C849.4,636.9 681.4,663.1 681.4,725.0"/>
+<path class="cross grok" marker-end="url(#a-grok)" d="M880.1,568.0 C880.1,636.9 1048.1,663.1 1048.1,725.0"/>
+<path class="cross meta" marker-end="url(#a-meta)" d="M955.9,568.0 C955.9,636.9 376.1,663.1 376.1,725.0"/>
+<path class="cross meta" marker-end="url(#a-meta)" d="M986.6,568.0 C986.6,636.9 544.1,663.1 544.1,725.0"/>
+<path class="cross meta" marker-end="url(#a-meta)" d="M1017.4,568.0 C1017.4,636.9 712.1,663.1 712.1,725.0"/>
+<path class="cross meta" marker-end="url(#a-meta)" d="M1048.1,568.0 C1048.1,636.9 880.1,663.1 880.1,725.0"/>
+<path class="mem opus" marker-end="url(#a-opus)" d="M330,568.0 L330,725.0"/>
+<path class="mem sol" marker-end="url(#a-sol)" d="M498,568.0 L498,725.0"/>
+<path class="mem gemini" marker-end="url(#a-gemini)" d="M666,568.0 L666,725.0"/>
+<path class="mem grok" marker-end="url(#a-grok)" d="M834,568.0 L834,725.0"/>
+<path class="mem meta" marker-end="url(#a-meta)" d="M1002,568.0 L1002,725.0"/>
+<path class="cross opus" marker-end="url(#a-opus)" d="M283.9,788.0 C283.9,856.9 451.9,883.1 451.9,945.0"/>
+<path class="cross opus" marker-end="url(#a-opus)" d="M314.6,788.0 C314.6,856.9 619.9,883.1 619.9,945.0"/>
+<path class="cross opus" marker-end="url(#a-opus)" d="M345.4,788.0 C345.4,856.9 787.9,883.1 787.9,945.0"/>
+<path class="cross opus" marker-end="url(#a-opus)" d="M376.1,788.0 C376.1,856.9 955.9,883.1 955.9,945.0"/>
+<path class="cross sol" marker-end="url(#a-sol)" d="M451.9,788.0 C451.9,856.9 283.9,883.1 283.9,945.0"/>
+<path class="cross sol" marker-end="url(#a-sol)" d="M482.6,788.0 C482.6,856.9 650.6,883.1 650.6,945.0"/>
+<path class="cross sol" marker-end="url(#a-sol)" d="M513.4,788.0 C513.4,856.9 818.6,883.1 818.6,945.0"/>
+<path class="cross sol" marker-end="url(#a-sol)" d="M544.1,788.0 C544.1,856.9 986.6,883.1 986.6,945.0"/>
+<path class="cross gemini" marker-end="url(#a-gemini)" d="M619.9,788.0 C619.9,856.9 314.6,883.1 314.6,945.0"/>
+<path class="cross gemini" marker-end="url(#a-gemini)" d="M650.6,788.0 C650.6,856.9 482.6,883.1 482.6,945.0"/>
+<path class="cross gemini" marker-end="url(#a-gemini)" d="M681.4,788.0 C681.4,856.9 849.4,883.1 849.4,945.0"/>
+<path class="cross gemini" marker-end="url(#a-gemini)" d="M712.1,788.0 C712.1,856.9 1017.4,883.1 1017.4,945.0"/>
+<path class="cross grok" marker-end="url(#a-grok)" d="M787.9,788.0 C787.9,856.9 345.4,883.1 345.4,945.0"/>
+<path class="cross grok" marker-end="url(#a-grok)" d="M818.6,788.0 C818.6,856.9 513.4,883.1 513.4,945.0"/>
+<path class="cross grok" marker-end="url(#a-grok)" d="M849.4,788.0 C849.4,856.9 681.4,883.1 681.4,945.0"/>
+<path class="cross grok" marker-end="url(#a-grok)" d="M880.1,788.0 C880.1,856.9 1048.1,883.1 1048.1,945.0"/>
+<path class="cross meta" marker-end="url(#a-meta)" d="M955.9,788.0 C955.9,856.9 376.1,883.1 376.1,945.0"/>
+<path class="cross meta" marker-end="url(#a-meta)" d="M986.6,788.0 C986.6,856.9 544.1,883.1 544.1,945.0"/>
+<path class="cross meta" marker-end="url(#a-meta)" d="M1017.4,788.0 C1017.4,856.9 712.1,883.1 712.1,945.0"/>
+<path class="cross meta" marker-end="url(#a-meta)" d="M1048.1,788.0 C1048.1,856.9 880.1,883.1 880.1,945.0"/>
+<path class="mem opus" marker-end="url(#a-opus)" d="M330,788.0 L330,945.0"/>
+<path class="mem sol" marker-end="url(#a-sol)" d="M498,788.0 L498,945.0"/>
+<path class="mem gemini" marker-end="url(#a-gemini)" d="M666,788.0 L666,945.0"/>
+<path class="mem grok" marker-end="url(#a-grok)" d="M834,788.0 L834,945.0"/>
+<path class="mem meta" marker-end="url(#a-meta)" d="M1002,788.0 L1002,945.0"/>
+<path class="rail" d="M1186,320 L1186,1050 C1186,1120 1002,1130 891.0,1148.0"/>
+<path class="tap" marker-end="url(#a-n)" d="M1081.0,320 L1182,320"/>
+<circle cx="1186" cy="320" r="3" fill="var(--ink3)" opacity=".55"/>
+<path class="tap" marker-end="url(#a-n)" d="M1081.0,540 L1182,540"/>
+<circle cx="1186" cy="540" r="3" fill="var(--ink3)" opacity=".55"/>
+<path class="tap" marker-end="url(#a-n)" d="M1081.0,760 L1182,760"/>
+<circle cx="1186" cy="760" r="3" fill="var(--ink3)" opacity=".55"/>
+<path class="tap" marker-end="url(#a-n)" d="M1081.0,980 L1182,980"/>
+<circle cx="1186" cy="980" r="3" fill="var(--ink3)" opacity=".55"/>
+<text x="1180.0" y="142.0" class="rname" text-anchor="start">THE TRANSCRIPT</text>
+<text x="1180.0" y="164.0" class="rnote" text-anchor="start">Every turn joins it,</text>
+<text x="1180.0" y="178.0" class="rnote" text-anchor="start">in order. The</text>
+<text x="1180.0" y="192.0" class="rnote" text-anchor="start">synthesizer reads</text>
+<text x="1180.0" y="206.0" class="rnote" text-anchor="start">all of it.</text>
+<rect class="card" x="525.0" y="1154.0" width="380" height="92" rx="14" stroke="var(--sol)" stroke-width="1.6"/>
+<rect class="fsol" x="525.0" y="1154.0" width="4" height="92" rx="2"/>
+<text x="715.0" y="1180.0" class="rname" text-anchor="middle">SYNTHESIS</text>
+<text x="715.0" y="1202.0" class="nname" text-anchor="middle">GPT (OpenAI)</text>
+<text x="715.0" y="1222.0" class="rnote" text-anchor="middle">fresh context — it reads the record, it does not carry its own side</text>
 <text x="44.0" y="1180.0" class="rnum" text-anchor="start">05</text>
 <text x="44.0" y="1198.0" class="rname" text-anchor="start">SYNTHESIS</text>
 <text x="44.0" y="1218.0" class="rnote" text-anchor="start">The strongest combined</text>
 <text x="44.0" y="1232.0" class="rnote" text-anchor="start">answer, preserving the</text>
 <text x="44.0" y="1246.0" class="rnote" text-anchor="start">disagreement rather than</text>
 <text x="44.0" y="1260.0" class="rnote" text-anchor="start">averaging it away.</text>
-<path class="qedge" marker-end="url(#a-q)" d="M625.0,1246.0 L625.0,1292.0"/>
-<text x="625.0" y="1314.0" class="callb" text-anchor="middle">One answer, with the disagreements still inspectable</text>
-<line class="divider" x1="44" y1="1334" x2="1206" y2="1334"/>
+<path class="qedge" marker-end="url(#a-q)" d="M715.0,1246.0 L715.0,1292.0"/>
+<text x="715.0" y="1314.0" class="callb" text-anchor="middle">One answer, with the disagreements still inspectable</text>
+<line class="divider" x1="44" y1="1334" x2="1386" y2="1334"/>
 <path class="mem opus" d="M44,1362 L90,1362"/>
 <text x="102.0" y="1366.0" class="call" text-anchor="start">carries its own memory forward — the same conversation, one turn longer</text>
 <path class="cross opus" d="M44,1386 L90,1386"/>
-<text x="102.0" y="1390.0" class="call" text-anchor="start">receives the other three's answers — never its own</text>
+<text x="102.0" y="1390.0" class="call" text-anchor="start">receives every other model's answer — never its own</text>
 <path class="tap" d="M44,1410 L90,1410"/>
 <text x="102.0" y="1414.0" class="call" text-anchor="start">every turn joins the transcript the synthesizer reads</text>
-<text x="1206.0" y="1366.0" class="lbl" text-anchor="end">Colour is the model that spoke.</text>
-<text x="1206.0" y="1384.0" class="lbl" text-anchor="end">Every arc is one API call, made from the browser.</text>
-<text x="1206.0" y="1402.0" class="lbl" text-anchor="end">17 calls in a four-round run.</text>
+<text x="1386.0" y="1366.0" class="lbl" text-anchor="end">Colour is the model that spoke.</text>
+<text x="1386.0" y="1384.0" class="lbl" text-anchor="end">Every arc is one API call, made from the browser.</text>
+<text x="1386.0" y="1402.0" class="lbl" text-anchor="end">21 calls in a four-round run.</text>
 </svg>

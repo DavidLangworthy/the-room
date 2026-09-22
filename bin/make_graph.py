@@ -5,15 +5,15 @@ The picture has to be true to the code in site/app.js, so the topology is derive
 from the same facts the app enforces:
   * round one receives the question and nothing else — no edges between seats
   * every later round: each seat carries its own memory forward (the straight line)
-    and receives the other three seats' answers (the curves). Never its own.
+    and receives every other seat's answer (the curves). Never its own.
   * the synthesizer reads the whole transcript with fresh context of its own.
 """
 import os
 
-W, H = 1250, 1470
-COLS = [345, 522, 699, 876]
+W, H = 1430, 1470
+COLS = [330, 498, 666, 834, 1002]
 NODE_W, NODE_H = 150, 56
-RAIL_X = 1056
+RAIL_X = 1186
 GUT = 44                      # left gutter for round labels
 
 SEATS = [
@@ -21,15 +21,16 @@ SEATS = [
     ("GPT", "OpenAI", "sol"),
     ("Gemini", "Google", "gemini"),
     ("Grok", "xAI", "grok"),
+    ("Muse", "Meta", "meta"),
 ]
 
 ROUNDS = [
     ("01", "Independent", 320,
      ["Each model answers the", "question alone, unaware", "that anyone else exists."],
-     ["No lines run between", "these four. Round one", "is blind."]),
+     ["No lines run between", "these five. Round one", "is blind."]),
     ("02", "Critique", 540,
-     ["It now reads the other", "three and responds —", "checking, not deferring."],
-     ["From here on each model", "sees the other three,", "and never its own."]),
+     ["It now reads what the", "others said and responds —", "checking, not deferring."],
+     ["From here on each model", "sees every other one,", "and never its own."]),
     ("03", "Reconsider", 760,
      ["What moved them, what", "they still hold, what is", "still unresolved."], []),
     ("04", "Exchange", 980,
@@ -46,9 +47,11 @@ out = []
 def add(x): out.append(x)
 
 
-def node_slots(n=4):
-    """Fixed exit/entry positions across a node edge, one slot per seat index."""
-    return [-52, -26, 26, 52][:n]
+def node_slots(n):
+    """Evenly spread exit/entry positions across a node edge, never on the centre
+    line — that belongs to the memory edge."""
+    span = NODE_W * 0.82
+    return [round(-span / 2 + span * (i + 0.5) / n, 1) for i in range(n)]
 
 
 def text(x, y, s, cls="", anchor="start", extra=""):
@@ -60,7 +63,7 @@ add(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" 
     f'role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, '
     f'&quot;SF Pro Text&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif">')
 add('<title id="t">How one question becomes one answer in Room of Models</title>')
-add('<desc id="d">Four AI models answer a question independently in round one with no '
+add('<desc id="d">Five AI models answer a question independently in round one with no '
     'connections between them, then exchange answers across three further rounds, and the '
     'whole transcript flows into a single synthesis node.</desc>')
 
@@ -68,15 +71,15 @@ add('''<style>
   :root{
     --paper:#EFF1EC; --surface:#FAFBF8; --ink:#191C19; --ink2:#454B44; --ink3:#646B62;
     --rule:#D5D9CE; --brass:#6E6A3C;
-    --opus:#8F4A18; --sol:#1C6B5C; --gemini:#3A5A99; --grok:#8A3A5E;
-    --opusW:#F6EAE0; --solW:#E2EFEB; --geminiW:#E5EAF5; --grokW:#F5E6EC;
+    --opus:#8F4A18; --sol:#1C6B5C; --gemini:#3A5A99; --grok:#8A3A5E; --meta:#6A3FA0;
+    --opusW:#F6EAE0; --solW:#E2EFEB; --geminiW:#E5EAF5; --grokW:#F5E6EC; --metaW:#EDE6F7;
   }
   @media (prefers-color-scheme:dark){
     :root{
       --paper:#14171A; --surface:#1B1F23; --ink:#E7EAE4; --ink2:#AEB5AC; --ink3:#8C938B;
       --rule:#2C3238; --brass:#B5AE72;
-      --opus:#E09550; --sol:#54B9A0; --gemini:#88A8E4; --grok:#D68BAD;
-      --opusW:#2A2018; --solW:#162925; --geminiW:#1A2130; --grokW:#2A1A22;
+      --opus:#E09550; --sol:#54B9A0; --gemini:#88A8E4; --grok:#D68BAD; --meta:#BFA3EC;
+      --opusW:#2A2018; --solW:#162925; --geminiW:#1A2130; --grokW:#2A1A22; --metaW:#221A2E;
     }
   }
   .bg{fill:var(--paper)}
@@ -103,16 +106,16 @@ add('''<style>
   .qedge{stroke:var(--brass);stroke-width:1.5;fill:none;opacity:.75}
   .divider{stroke:var(--rule);stroke-width:1}
   .legbox{fill:var(--surface);stroke:var(--rule);stroke-width:1}
-  .opus{stroke:var(--opus)} .sol{stroke:var(--sol)}
+  .opus{stroke:var(--opus)} .sol{stroke:var(--sol)} .meta{stroke:var(--meta)}
   .gemini{stroke:var(--gemini)} .grok{stroke:var(--grok)}
-  .fopus{fill:var(--opus)} .fsol{fill:var(--sol)}
+  .fopus{fill:var(--opus)} .fsol{fill:var(--sol)} .fmeta{fill:var(--meta)}
   .fgemini{fill:var(--gemini)} .fgrok{fill:var(--grok)}
-  .wopus{fill:var(--opusW)} .wsol{fill:var(--solW)}
+  .wopus{fill:var(--opusW)} .wsol{fill:var(--solW)} .wmeta{fill:var(--metaW)}
   .wgemini{fill:var(--geminiW)} .wgrok{fill:var(--grokW)}
 </style>''')
 
 add('<defs>')
-for key in ("opus", "sol", "gemini", "grok"):
+for key in ("opus", "sol", "gemini", "grok", "meta"):
     add(f'<marker id="a-{key}" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" '
         f'markerHeight="6" orient="auto-start-reverse">'
         f'<path d="M0,1 L7,4 L0,7 z" class="f{key}"/></marker>')
@@ -126,12 +129,12 @@ add(f'<rect class="bg" width="{W}" height="{H}"/>')
 
 # ------------------------------------------------------------------ title --
 text(GUT, 62, "How one question becomes one answer", "h1")
-text(GUT, 88, "Four frontier models, four rounds, one synthesis — the shape of a single run.", "h2")
+text(GUT, 88, "Five frontier models, four rounds, one synthesis — the shape of a single run.", "h2")
 add(f'<line class="divider" x1="{GUT}" y1="108" x2="{W-GUT}" y2="108"/>')
 
 # --------------------------------------------------------------- question --
 qw, qh = 470, 54
-qx = COLS[0] - NODE_W / 2 + ((COLS[3] + NODE_W / 2) - (COLS[0] - NODE_W / 2) - qw) / 2
+qx = COLS[0] - NODE_W / 2 + ((COLS[-1] + NODE_W / 2) - (COLS[0] - NODE_W / 2) - qw) / 2
 add(f'<rect class="qcard" x="{qx:.1f}" y="{Q_Y - qh/2}" width="{qw}" height="{qh}" rx="27"/>')
 text(qx + qw / 2, Q_Y + 5, "Your question", "qtext", "middle")
 text(GUT, Q_Y - 6, "INPUT", "rnum")
@@ -163,7 +166,8 @@ for col in range(4):
     add(f'<path class="qedge" marker-end="url(#a-q)" d="M{sx:.1f},{sy:.1f} '
         f'C{sx:.1f},{sy+52:.1f} {tx:.1f},{ty-56:.1f} {tx:.1f},{ty-7:.1f}"/>')
 # --------------------------------------- between rounds: memory + cross edges --
-slots = node_slots()
+N = len(SEATS)
+slots = node_slots(N - 1)          # one slot per peer
 for r in range(len(ROUNDS) - 1):
     sy_c, ty_c = ROUNDS[r][2], ROUNDS[r + 1][2]
     sy = sy_c + NODE_H / 2
@@ -171,11 +175,11 @@ for r in range(len(ROUNDS) - 1):
     dy = ty - sy
     # cross edges first, so the memory lines sit on top of them
     for si, (_, _, skey) in enumerate(SEATS):
-        for ti in range(4):
-            if ti == si:
-                continue
-            x1 = COLS[si] + slots[ti]
-            x2 = COLS[ti] + slots[si]
+        peers = [t for t in range(N) if t != si]
+        for slot_i, ti in enumerate(peers):
+            back = [t for t in range(N) if t != ti]     # where si sits among ti's peers
+            x1 = COLS[si] + slots[slot_i]
+            x2 = COLS[ti] + slots[back.index(si)]
             add(f'<path class="cross {skey}" marker-end="url(#a-{skey})" '
                 f'd="M{x1:.1f},{sy:.1f} C{x1:.1f},{sy+dy*0.42:.1f} '
                 f'{x2:.1f},{ty-dy*0.42:.1f} {x2:.1f},{ty-7:.1f}"/>')
@@ -188,11 +192,11 @@ for r in range(len(ROUNDS) - 1):
 rail_top = ROUNDS[0][2]
 rail_bot = SYNTH_Y - 150
 add(f'<path class="rail" d="M{RAIL_X},{rail_top} L{RAIL_X},{rail_bot} '
-    f'C{RAIL_X},{rail_bot+70} {COLS[3]},{SYNTH_Y-70} '
+    f'C{RAIL_X},{rail_bot+70} {COLS[-1]},{SYNTH_Y-70} '
     f'{W/2 + SYNTH_W/2 - 14:.1f},{SYNTH_Y - SYNTH_H/2 - 6:.1f}"/>')
 for _, _, cy, _, _ in ROUNDS:
     add(f'<path class="tap" marker-end="url(#a-n)" '
-        f'd="M{COLS[3] + NODE_W/2 + 4},{cy} L{RAIL_X - 4},{cy}"/>')
+        f'd="M{COLS[-1] + NODE_W/2 + 4},{cy} L{RAIL_X - 4},{cy}"/>')
     add(f'<circle cx="{RAIL_X}" cy="{cy}" r="3" fill="var(--ink3)" opacity=".55"/>')
 text(RAIL_X - 6, Q_Y - 34, "THE TRANSCRIPT", "rname", "start")
 for i, ln in enumerate(["Every turn joins it,", "in order. The", "synthesizer reads", "all of it."]):
@@ -227,7 +231,7 @@ ly = H - 108
 add(f'<line class="divider" x1="{GUT}" y1="{ly - 28}" x2="{W-GUT}" y2="{ly - 28}"/>')
 items = [
     ("mem opus", "carries its own memory forward — the same conversation, one turn longer"),
-    ("cross opus", "receives the other three's answers — never its own"),
+    ("cross opus", "receives every other model's answer — never its own"),
     ("tap", "every turn joins the transcript the synthesizer reads"),
 ]
 for i, (cls, label) in enumerate(items):
@@ -239,7 +243,7 @@ for i, (cls, label) in enumerate(items):
     text(GUT + 58, y + 4, label, "call")
 text(W - GUT, ly + 4, "Colour is the model that spoke.", "lbl", "end")
 text(W - GUT, ly + 22, "Every arc is one API call, made from the browser.", "lbl", "end")
-text(W - GUT, ly + 40, "17 calls in a four-round run.", "lbl", "end")
+text(W - GUT, ly + 40, "21 calls in a four-round run.", "lbl", "end")
 
 add("</svg>")
 
