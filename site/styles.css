@@ -192,7 +192,8 @@ body{min-height:100vh}
 .bar.scrolled{border-bottom-color:var(--rule)}
 .bar-in{width:min(988px,100%);margin-inline:auto;padding:16px 24px;
         display:flex;align-items:center;justify-content:space-between;gap:16px}
-.wordmark{display:flex;align-items:baseline;gap:10px;font-size:15px;letter-spacing:-.015em}
+.wordmark{display:flex;align-items:baseline;gap:9px;font-size:15px;
+          letter-spacing:-.015em;min-width:0}
 .wordmark b{font-weight:640;color:var(--ink)}
 .wordmark span{font-size:12.5px;color:var(--ink-3)}
 .bar-right{display:flex;align-items:center;gap:14px}
@@ -350,7 +351,6 @@ dialog::backdrop{background:color-mix(in srgb,var(--sunk) 70%,transparent);backd
   .bar-in{padding:12px 18px;flex-wrap:wrap;row-gap:10px}
   .bar-right{width:100%;justify-content:space-between;gap:10px}
   .linkish{font-size:12px}
-  .wordmark span{display:none}
   #ask-view{padding-top:18px}
   #question{border-radius:22px;padding:18px 20px}
   .controls{flex-direction:column;align-items:stretch}
@@ -405,4 +405,29 @@ dialog::backdrop{background:color-mix(in srgb,var(--sunk) 70%,transparent);backd
 @media(max-width:640px){
   .run-foot{padding:18px 18px}
   .btn-solid.lg{width:100%;text-align:center}
+}
+
+/* --------------------------------------------------------- brand lockup ---- */
+/* The mark and the name are one object: a logotype. WCAG exempts logotypes from
+   contrast, which is just as well — the brand orange is 2.5:1 on this paper, so
+   it is sized and weighted like a mark and never used for reading text. */
+:root{ --brand:#F97316; }
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.mark{width:36px;height:36px;display:block;flex:none}
+.brandname{font-family:Futura,"Futura PT","Avenir Next","Century Gothic","Trebuchet MS",
+           "Gill Sans",sans-serif;
+           font-size:17px;font-weight:600;letter-spacing:.115em;text-transform:uppercase;
+           color:var(--brand);white-space:nowrap;line-height:1}
+.brand-rule{width:1px;height:20px;background:var(--rule);flex:none;margin-inline:3px}
+
+/* The lockup takes real width, so the header has to shed its optional parts
+   earlier than it used to — the tagline was wrapping to three lines at 800px. */
+@media(max-width:1180px){ #tagline{display:none} }
+@media(max-width:820px){
+  .brandname{font-size:15px;letter-spacing:.09em}
+  .mark{width:29px;height:29px}
+  .brand{gap:9px}
+}
+@media(max-width:560px){
+  .brandname,.brand-rule{display:none}   /* mark alone carries the brand */
 }
