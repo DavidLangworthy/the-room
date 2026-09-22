@@ -392,3 +392,17 @@ dialog::backdrop{background:color-mix(in srgb,var(--sunk) 70%,transparent);backd
   .flow-scroll{padding:6px}
   .flow-scroll img{min-width:760px}
 }
+
+/* ------------------------------------------------ save the conversation ---- */
+.run-foot{display:flex;align-items:center;justify-content:space-between;gap:26px;
+          flex-wrap:wrap;margin-top:34px;padding:22px 24px;background:var(--surface);
+          border:1px solid var(--rule);border-radius:12px}
+.run-foot-text{flex:1;min-width:min(260px,100%)}
+.run-foot h3{margin:0;font-size:15px;font-weight:620;letter-spacing:-.015em;color:var(--ink)}
+.run-foot p{margin:7px 0 0;font-size:13px;line-height:1.6;color:var(--ink-3);max-width:62ch}
+.btn-solid.lg{font-size:14px;padding:12px 28px}
+.btn-solid:disabled{opacity:.38;cursor:default}
+@media(max-width:640px){
+  .run-foot{padding:18px 18px}
+  .btn-solid.lg{width:100%;text-align:center}
+}

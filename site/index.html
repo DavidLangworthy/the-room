@@ -68,7 +68,7 @@
       </div>
       <div class="run-actions">
         <button class="btn-quiet sm" id="stop" type="button">Stop</button>
-        <button class="btn-quiet sm" id="download" type="button" disabled>Download</button>
+        <button class="btn-quiet sm" data-download type="button" disabled>Download</button>
         <button class="btn-quiet sm" id="restart" type="button">New question</button>
       </div>
     </div>
@@ -88,6 +88,16 @@
     </div>
 
     <div class="ledger-strip" id="ledger" hidden></div>
+
+    <div class="run-foot" id="run-foot" hidden>
+      <div class="run-foot-text">
+        <h3>Keep this conversation</h3>
+        <p>One self-contained HTML file — all four models, every round, the synthesis and what
+          it cost. It opens in any browser, works with no network, and is built here in the page:
+          nothing is uploaded to save it.</p>
+      </div>
+      <button class="btn-solid lg" data-download type="button" disabled>Download</button>
+    </div>
   </div>
 </section>
 

@@ -457,7 +457,7 @@ async function run() {
   $('synth-box').hidden = true;
   $('conf-box').hidden = true;
   $('ledger').hidden = true;
-  $('download').disabled = true;
+  setDownloadable(false);
   $('stop').disabled = false;
 
   const keys = MODES[state.mode];
@@ -489,7 +489,7 @@ async function run() {
     $('stop').disabled = true;
     const anyOk = state.run.rounds.some(rd => rd.turns.some(t => t.meta.ok));
     if (state.run.rounds.length) paintLedger();
-    $('download').disabled = !anyOk;
+    setDownloadable(anyOk);
   }
 }
 
@@ -564,6 +564,13 @@ function buildDownload() {
     `Every turn is a real API call to the named vendor; any factual claims are the models' own.` +
     `</span><span><code>${esc(r.date)}</code></span></footer></div></body></html>`);
   return parts.join('\n');
+}
+
+/** Both Download buttons — the one in the run header and the one at the foot — are
+ *  driven from here, so they can never disagree about whether there is a run to save. */
+function setDownloadable(on) {
+  document.querySelectorAll('[data-download]').forEach(b => { b.disabled = !on; });
+  $('run-foot').hidden = !on;
 }
 
 function download() {
@@ -677,7 +684,8 @@ function init() {
   });
   $('open-key').addEventListener('click', () => openKey());
   $('open-privacy').addEventListener('click', () => $('privacy-dialog').showModal());
-  $('download').addEventListener('click', download);
+  document.querySelectorAll('[data-download]').forEach(b =>
+    b.addEventListener('click', download));
   $('stop').addEventListener('click', () => {
     if (state.run) state.run.stopped = true;
     if (state.controller) state.controller.abort();
