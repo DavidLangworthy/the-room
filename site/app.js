@@ -450,8 +450,7 @@ async function run() {
     rounds: [], memory: {}, synthesis: '', synthesizedBy: '', stopped: false,
   };
 
-  $('ask-view').hidden = true;
-  $('run-view').hidden = false;
+  showView('run');
   $('run-question').textContent = question;
   $('run-question').focus();      // hiding the ask view drops focus to <body> otherwise
   $('rounds').textContent = '';
@@ -607,6 +606,12 @@ function loadKey() {
   } catch (_) { /* private mode, or storage blocked — memory-only is a fine fallback */ }
 }
 
+/** The app has three screens; exactly one is ever visible. */
+function showView(name) {
+  for (const v of ['ask', 'run', 'how']) $(v + '-view').hidden = (v !== name);
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
 // --------------------------------------------------------------- wiring ---
 function buildTeam() {
   const box = $('team');
@@ -681,10 +686,15 @@ function init() {
   $('restart').addEventListener('click', () => {
     if (state.run) state.run.stopped = true;      // or the dead run records a phantom round
     if (state.controller) state.controller.abort();
-    $('run-view').hidden = true;
-    $('ask-view').hidden = false;
+    showView('ask');
     $('question').focus();
   });
+
+  // "How it works" never disturbs a run — the run view keeps updating behind it.
+  $('open-how').addEventListener('click', () => showView('how'));
+  $('how-back').addEventListener('click', () =>
+    showView(state.run && !state.run.stopped ? 'run' : 'ask'));
+  $('how-start').addEventListener('click', () => { showView('ask'); $('question').focus(); });
 
   $('clear-key').addEventListener('click', () => {
     state.key = '';
