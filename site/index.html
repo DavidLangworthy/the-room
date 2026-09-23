@@ -3,17 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Clock — a room of four minds</title>
+<title>Room of Models — one question, four minds</title>
 <meta name="description" content="Ask one question. Four frontier AI models from four different companies answer independently, then argue. Runs entirely in your browser.">
 <meta name="referrer" content="no-referrer">
 <link rel="stylesheet" href="styles.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><circle cx='20' cy='20' r='15' fill='none' stroke='%23A85A22' stroke-width='4' stroke-dasharray='19 5.5' stroke-dashoffset='2.75'/></svg>">
+<link rel="icon" href="tandem-mark.svg" type="image/svg+xml">
 </head>
 <body>
 
 <header class="bar">
   <div class="bar-in">
-    <div class="wordmark"><b>Clock.</b><span id="tagline">a room of four minds</span></div>
+    <div class="brand">
+      <img class="mark" src="tandem-mark.svg" alt="" width="56" height="56">
+      <span class="brand-text">
+        <span class="brandname">Tandem Works</span>
+        <span class="product">Room of Models<span id="tagline"></span></span>
+      </span>
+    </div>
     <div class="bar-right">
       <button class="linkish" id="open-how" type="button">How it works</button>
       <button class="linkish" id="open-privacy" type="button">Where your data goes</button>
@@ -68,7 +74,7 @@
       </div>
       <div class="run-actions">
         <button class="btn-quiet sm" id="stop" type="button">Stop</button>
-        <button class="btn-quiet sm" id="download" type="button" disabled>Download</button>
+        <button class="btn-quiet sm" data-download type="button" disabled>Download</button>
         <button class="btn-quiet sm" id="restart" type="button">New question</button>
       </div>
     </div>
@@ -88,6 +94,16 @@
     </div>
 
     <div class="ledger-strip" id="ledger" hidden></div>
+
+    <div class="run-foot" id="run-foot" hidden>
+      <div class="run-foot-text">
+        <h3>Keep this conversation</h3>
+        <p>One self-contained HTML file — all four models, every round, the synthesis and what
+          it cost. It opens in any browser, works with no network, and is built here in the page:
+          nothing is uploaded to save it.</p>
+      </div>
+      <button class="btn-solid lg" data-download type="button" disabled>Download</button>
+    </div>
   </div>
 </section>
 
@@ -96,7 +112,7 @@
   <div class="how-in">
     <button class="btn-quiet sm back" id="how-back" type="button">&#8592; Back</button>
 
-    <h1 class="how-h1">How Clock works</h1>
+    <h1 class="how-h1">How the room works</h1>
     <p class="how-lede">One question goes to four frontier models from four different
       companies. They answer alone, then read each other and argue for three more rounds, and a
       synthesizer builds the strongest combined answer. Every arc below is one API call, made
@@ -116,7 +132,7 @@
       <figcaption>
         Colour is the model that spoke. Thick straight lines are a model carrying its own memory
         forward; thin curves are the other three's answers arriving.
-        <a href="how-it-works.svg" download="clock-flow.svg">Download this diagram</a>.
+        <a href="how-it-works.svg" download="room-of-models-flow.svg">Download this diagram</a>.
       </figcaption>
     </figure>
 
@@ -137,8 +153,8 @@
         room would argue with it.</dd>
 
       <dt>If a model drops out, the room carries on.</dt>
-      <dd>A rate limit or an outage costs you that seat for that round, not the run — Clock says
-        who was missing and continues with the rest. If fewer than two models are still
+      <dd>A rate limit or an outage costs you that seat for that round, not the run — the room says
+        who was missing and carries on with the rest. If fewer than two models are still
         answering there is nothing left to argue with, so it goes straight to the synthesis.</dd>
 
       <dt>The synthesizer reads the record, not its own side.</dt>

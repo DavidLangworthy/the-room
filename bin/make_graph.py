@@ -59,7 +59,7 @@ def text(x, y, s, cls="", anchor="start", extra=""):
 add(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" '
     f'role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, '
     f'&quot;SF Pro Text&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif">')
-add('<title id="t">How one question becomes one answer in Clock</title>')
+add('<title id="t">How one question becomes one answer in Room of Models</title>')
 add('<desc id="d">Four AI models answer a question independently in round one with no '
     'connections between them, then exchange answers across three further rounds, and the '
     'whole transcript flows into a single synthesis node.</desc>')
@@ -126,7 +126,7 @@ add(f'<rect class="bg" width="{W}" height="{H}"/>')
 
 # ------------------------------------------------------------------ title --
 text(GUT, 62, "How one question becomes one answer", "h1")
-text(GUT, 88, "Four frontier models, four rounds, one synthesis — the shape of a single Clock run.", "h2")
+text(GUT, 88, "Four frontier models, four rounds, one synthesis — the shape of a single run.", "h2")
 add(f'<line class="divider" x1="{GUT}" y1="108" x2="{W-GUT}" y2="108"/>')
 
 # --------------------------------------------------------------- question --
