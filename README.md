@@ -184,7 +184,6 @@ Working and deployed. Known gaps:
 
 - Meta's Muse intermittently fails mid-stream for some accounts; diagnostics to capture the
   upstream error are the next piece of work
-- the brand mark in `site/` is a placeholder drawing, not final artwork
 - no test coverage beyond the injection suite
 
 ---

@@ -740,6 +740,12 @@ function init() {
     paintKey();
   });
 
+  // Condense the header once the page moves; also switches on its hairline rule.
+  const bar = document.querySelector('.bar');
+  const onScroll = () => bar.classList.toggle('scrolled', window.scrollY > 8);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
   paintKey();
 }
 
