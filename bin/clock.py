@@ -20,7 +20,16 @@ LABELS = {"opus": "Claude (Anthropic)", "sol": "GPT (OpenAI)",
           "gemini": "Gemini (Google)", "grok": "Grok (xAI)"}
 ORDER = ["opus", "sol", "gemini", "grok"]
 
-SYSTEM = f"""You are {{SEAT}}, one of four AI models from four different companies \
+SYSTEM_BLIND = """Today is {DATE}.
+
+Answer in your own voice, as prose. No headings, no bullet lists, no section labels, no \
+restating the question back.
+
+Say what you actually think, and say plainly when you don't know or when the evidence is thin. \
+You have web search: use it to check a fact rather than asserting it from memory. Be concise — \
+a few tight paragraphs at most."""
+
+SYSTEM_ROOM = f"""You are {{SEAT}}, one of four AI models from four different companies \
 sitting in one room and thinking together. The room is Claude (Anthropic), GPT (OpenAI), \
 Gemini (Google) and Grok (xAI). Today is {TODAY}.
 
@@ -36,9 +45,7 @@ either. Be concise — a few tight paragraphs at most."""
 
 ROUNDS = {
  "independent":
-  "{Q}\n\nThis is the first round and you are answering alone — you have not seen and will "
-  "not see what the others said before you commit to this. Give your own answer, on the "
-  "record.",
+  "{Q}",
  "critique":
   "The room has now spoken. Here is what each of the others said, independently, to the "
   "same question:\n\n{OTHERS}\n\nRespond to them. Where do you agree, where do you think "
@@ -146,7 +153,8 @@ def main():
             os.makedirs(f"{run_dir}/{d}", exist_ok=True)
         open(f"{run_dir}/prompt.txt", "w").write(q)
         json.dump({"run_id": rid, "prompt": q, "seats": SEATS, "labels": LABELS,
-                   "order": ORDER, "system": SYSTEM, "date": TODAY,
+                   "order": ORDER, "system": SYSTEM_BLIND.replace("{DATE}", TODAY),
+                   "system_room": SYSTEM_ROOM, "date": TODAY,
                    "transport": "openrouter chat/completions, web plugin, natural prose",
                    "started_utc": datetime.datetime.now(datetime.timezone.utc).isoformat()},
                   open(f"{run_dir}/run.json", "w"), indent=2)

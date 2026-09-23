@@ -45,7 +45,16 @@ SHORT = {"opus": "Claude", "sol": "GPT", "gemini": "Gemini", "grok": "Grok"}
 ORDER = ["opus", "sol", "gemini", "grok"]
 SYNTHESIZER = "sol"
 
-SYSTEM = """You are {SEAT}, one of four AI models from four different companies \
+SYSTEM_BLIND = """Today is {DATE}.
+
+Answer in your own voice, as prose. No headings, no bullet lists, no section labels, no \
+restating the question back.
+
+Say what you actually think, and say plainly when you don't know or when the evidence is thin. \
+You have web search: use it to check a fact rather than asserting it from memory. Be concise — \
+a few tight paragraphs at most."""
+
+SYSTEM_ROOM = """You are {SEAT}, one of four AI models from four different companies \
 sitting in one room and thinking together. The room is Claude (Anthropic), GPT (OpenAI), \
 Gemini (Google) and Grok (xAI). Today is {DATE}.
 
@@ -63,13 +72,13 @@ ROUNDS = {
  "independent": ("Independent",
   "Asked alone. No participant can see another's answer before committing to its own — the "
   "property that keeps the room from collapsing into an echo of whoever spoke first.",
-  "{Q}\n\nThis is the first round and you are answering alone — you have not seen and will "
-  "not see what the others said before you commit to this. Give your own answer, on the record."),
+  "{Q}"),
  "critique": ("Critique",
   "Each model now reads the other three and responds. Web search stays on, so a shaky number "
   "can be checked rather than deferred to.",
-  "The room has now spoken. Here is what each of the others said, independently, to the same "
-  "question:\n\n{OTHERS}\n\nRespond to them. Where do you agree, where do you think one of "
+  "Something you were not told: three other AI models, from three other companies, were asked "
+  "that same question at the same moment, each of them alone and unaware of the rest — as were "
+  "you. Here is what each of them said:\n\n{OTHERS}\n\nRespond to them. Where do you agree, where do you think one of "
   "them is wrong or is missing something that matters, and what did someone surface that you "
   "didn't? Go check the specific factual claims that look shaky rather than smoothing them "
   "over. Name names."),
@@ -150,8 +159,13 @@ def run_round(store, run, kind, question, prev):
 
     def one(seat):
         msgs = run["memory"].setdefault(seat, [
-            {"role": "system", "content": SYSTEM.replace("{SEAT}", LABELS[seat])
-                                                .replace("{DATE}", run["date"])}])
+            {"role": "system", "content": SYSTEM_BLIND.replace("{DATE}", run["date"])}])
+        # The room only exists from the critique round on; until then this seat
+        # has never been told that anyone else is answering.
+        if kind != "independent":
+            msgs[0] = {"role": "system",
+                       "content": SYSTEM_ROOM.replace("{SEAT}", LABELS[seat])
+                                             .replace("{DATE}", run["date"])}
         send = msgs + [{"role": "user", "content": compose(seat, kind, question, prev)}]
         text, meta = call(run["seats"][seat], send)
         if meta["ok"]:
