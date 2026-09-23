@@ -1,0 +1,3 @@
+The EPA is eliminating federal limits on greenhouse-gas emissions from coal- and natural-gas-fired power plants. ([apnews.com](https://apnews.com/article/c1fd92ed754f6d320006c270cffbece7?utm_source=openai))  
+Oil prices rose more than 2% after a drone-damaged Saudi pipeline was expected to remain largely offline for weeks, while Houthi forces expanded control near Red Sea shipping routes. ([apnews.com](https://apnews.com/article/8c18d82c109a8ea91347ce53c0096c53?utm_source=openai))  
+President Trump rejected calls for stronger AI guardrails, arguing that restrictions could weaken America’s competitive position against China. ([apnews.com](https://apnews.com/article/b85df16775ff7e9611a456b061a0e4b9?utm_source=openai))

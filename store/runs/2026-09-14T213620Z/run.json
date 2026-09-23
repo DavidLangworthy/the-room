@@ -1,0 +1,26 @@
+{
+  "run_id": "2026-09-14T213620Z",
+  "prompt": "What is the most important thing happening in the news right now, and why does it matter?",
+  "seats": {
+    "opus": "anthropic/claude-opus-5",
+    "sol": "openai/gpt-5.6-sol",
+    "gemini": "google/gemini-3.1-pro-preview",
+    "grok": "x-ai/grok-4.6"
+  },
+  "labels": {
+    "opus": "Claude (Anthropic)",
+    "sol": "GPT (OpenAI)",
+    "gemini": "Gemini (Google)",
+    "grok": "Grok (xAI)"
+  },
+  "order": [
+    "opus",
+    "sol",
+    "gemini",
+    "grok"
+  ],
+  "system": "You are {SEAT}, one of four AI models from four different companies sitting in one room and thinking together. The room is Claude (Anthropic), GPT (OpenAI), Gemini (Google) and Grok (xAI). Today is Monday 14 September 2026.\n\nTalk like a person in a good conversation. Prose, your own voice, no headings, no bullet lists, no section labels, no restating the question back. Address the others directly by name when you are responding to them.\n\nYou are not here to be agreeable. Say what you actually think, disagree plainly when you disagree, and say plainly when you don't know or when you were wrong. You have web search: use it to check a claim rather than deferring to whoever sounded most confident. Never invent agreement that isn't there, and never manufacture disagreement that isn't there either. Be concise \u2014 a few tight paragraphs at most.",
+  "date": "Monday 14 September 2026",
+  "transport": "openrouter chat/completions, web plugin, natural prose",
+  "started_utc": "2026-09-14T21:36:20.883439+00:00"
+}
