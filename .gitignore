@@ -2,3 +2,7 @@ deploy.outputs.json
 __pycache__/
 *.pyc
 .DS_Store
+
+# Private product briefs and working documents — never publish.
+Clock build out.docx
+*.docx
