@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Room of Models — one question, four minds</title>
-<meta name="description" content="Ask one question. Four frontier AI models from four different companies answer independently, then argue. Runs entirely in your browser.">
+<title>Room of Models — one question, five minds</title>
+<meta name="description" content="Ask one question. Five frontier AI models from five different companies answer independently, then argue. Runs entirely in your browser.">
 <meta name="referrer" content="no-referrer">
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" href="tandem-mark.svg" type="image/svg+xml">
@@ -36,7 +36,7 @@
 
 
     <h1>What should we think about?</h1>
-    <p class="sub">Four frontier models, from four different companies, answer on their own —
+    <p class="sub">Five frontier models, from five different companies, answer on their own —
       then read each other and argue.</p>
 
     <div class="composer">
@@ -98,7 +98,7 @@
     <div class="run-foot" id="run-foot" hidden>
       <div class="run-foot-text">
         <h3>Keep this conversation</h3>
-        <p>One self-contained HTML file — all four models, every round, the synthesis and what
+        <p>One self-contained HTML file — every model, every round, the synthesis and what
           it cost. It opens in any browser, works with no network, and is built here in the page:
           nothing is uploaded to save it.</p>
       </div>
@@ -113,7 +113,7 @@
     <button class="btn-quiet sm back" id="how-back" type="button">&#8592; Back</button>
 
     <h1 class="how-h1">How the room works</h1>
-    <p class="how-lede">One question goes to four frontier models from four different
+    <p class="how-lede">One question goes to five frontier models from five different
       companies. They answer alone, then read each other and argue for three more rounds, and a
       synthesizer builds the strongest combined answer. Every arc below is one API call, made
       from this browser tab.</p>
@@ -121,17 +121,17 @@
     <figure class="flow">
       <div class="flow-scroll">
         <img src="how-it-works.svg" width="1250" height="1470"
-             alt="A five-layer diagram. At the top, one question fans out to four model nodes —
-                  Claude, GPT, Gemini and Grok — with no connections between them, marked round
-                  one is blind. Between each later round every node has a straight line carrying
-                  its own memory forward and three curved lines bringing the other three models'
-                  answers, never its own. A dashed rail down the right collects every turn into
+             alt="A five-layer diagram. At the top, one question fans out to five model nodes —
+                  Claude, GPT, Gemini, Grok and Muse — with no connections between them, marked
+                  round one is blind. Between each later round every node has a straight line
+                  carrying its own memory forward and four curved lines bringing the other four
+                  models' answers, never its own. A dashed rail down the right collects every turn into
                   the transcript, which flows into a single synthesis node at the bottom, and one
                   answer leaves it.">
       </div>
       <figcaption>
         Colour is the model that spoke. Thick straight lines are a model carrying its own memory
-        forward; thin curves are the other three's answers arriving.
+        forward; thin curves are the other models' answers arriving.
         <a href="how-it-works.svg" download="room-of-models-flow.svg">Download this diagram</a>.
       </figcaption>
     </figure>
@@ -163,9 +163,9 @@
         page.</dd>
     </dl>
 
-    <p class="how-foot">A four-round run is seventeen API calls and usually costs a couple of
-      dollars, billed to you by OpenRouter. Quick mode is one round plus the synthesis, for about
-      a fifth of that.</p>
+    <p class="how-foot">With all five seated, a four-round run is twenty-one API calls and
+      usually costs a few dollars, billed to you by OpenRouter. Quick mode is one round plus the
+      synthesis, for about a fifth of that. Unseat anyone you do not want in the room.</p>
 
     <button class="ask" id="how-start" type="button">Ask the room</button>
   </div>
@@ -175,7 +175,7 @@
 <dialog id="key-dialog">
   <form method="dialog" class="dlg">
     <h3>Your OpenRouter key</h3>
-    <p class="dlg-note">One key reaches all four vendors. Get one at
+    <p class="dlg-note">One key reaches all five vendors. Get one at
       <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer">openrouter.ai/keys</a>.
       It is sent only to <code>openrouter.ai</code>, in the <code>Authorization</code> header, by this
       tab. OpenRouter bills you directly.</p>
@@ -200,7 +200,7 @@
     <dl class="claims">
       <dt>There is no server to leak to.</dt>
       <dd>This is a static page. It has no backend, no database and no API routes of its own —
-        the only thing it ever does is hand your browser three files. Azure keeps two read-only
+        the only thing it ever does is hand your browser a handful of static files. Azure keeps two read-only
         endpoints of its own on this domain (<code>/.auth/me</code> and <code>/.auth/logout</code>)
         that cannot be switched off; the sign-in endpoints are turned off, nothing here calls any
         of them, and the policy below forbids this page from doing so.</dd>
@@ -214,7 +214,7 @@
         attached to requests to <code>openrouter.ai</code> and nothing else. Downloads are built
         here in the page and saved straight to your disk.</dd>
     </dl>
-    <p class="dlg-note quiet">What OpenRouter and the four vendors do with a question you send them
+    <p class="dlg-note quiet">What OpenRouter and the vendors do with a question you send them
       is between you and them — that is an ordinary API call, and their policies apply.</p>
     <menu><span class="spacer"></span><button value="ok" class="btn-solid" type="submit">Close</button></menu>
   </form>

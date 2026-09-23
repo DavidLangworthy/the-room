@@ -15,10 +15,12 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TODAY = datetime.date.today().strftime("%A %-d %B %Y")
 
 SEATS = {"opus": "anthropic/claude-opus-5", "sol": "openai/gpt-5.6-sol",
-         "gemini": "google/gemini-3.1-pro-preview", "grok": "x-ai/grok-4.6"}
+         "gemini": "google/gemini-3.1-pro-preview", "grok": "x-ai/grok-4.6",
+         "meta": "meta/muse-spark-1.3"}
 LABELS = {"opus": "Claude (Anthropic)", "sol": "GPT (OpenAI)",
-          "gemini": "Gemini (Google)", "grok": "Grok (xAI)"}
-ORDER = ["opus", "sol", "gemini", "grok"]
+          "gemini": "Gemini (Google)", "grok": "Grok (xAI)",
+          "meta": "Muse (Meta)"}
+ORDER = ["opus", "sol", "gemini", "grok", "meta"]
 
 SYSTEM_BLIND = """Today is {DATE}.
 
@@ -64,7 +66,7 @@ ROUNDS = {
 }
 
 SYNTH = (
- "You are the synthesizer for this run. Four models — Claude, GPT, Gemini and Grok — were "
+ "You are the synthesizer for this run. {roster} were "
  "asked: \"{Q}\"\n\nHere is the entire conversation, in order:\n\n{ALL}\n\nWrite the "
  "strongest combined answer the room can support. Do not take a majority vote and do not "
  "average anyone into blandness. Say what they agreed on, what they disagreed on and why, "
@@ -174,8 +176,14 @@ def main():
                 if os.path.exists(f) and open(f).read().strip():
                     all_txt.append(f"--- {LABELS[s]} ---\n{open(f).read().strip()}")
         os.makedirs(f"{run_dir}/rounds/zz-synth", exist_ok=True)
+        spoke = [x for x in ORDER
+                 if any(os.path.exists(f"{rd}/{x}.md") and open(f"{rd}/{x}.md").read().strip()
+                        for rd in round_dirs(run_dir))]
+        names = [LABELS[x] for x in spoke]
+        roster = (f"One model, {names[0]}," if len(names) == 1 else
+                  f"{len(names)} models — {', '.join(names[:-1])} and {names[-1]} —")
         open(f"{run_dir}/rounds/zz-synth/{seat}.prompt.md", "w").write(
-            SYNTH.format(Q=q, ALL="\n\n".join(all_txt)))
+            SYNTH.format(Q=q, ALL="\n\n".join(all_txt), roster=roster))
         # fresh context: the synthesizer reads the record, it does not carry its own side
         msp = f"{run_dir}/seats/{seat}.messages.json"
         bak = msp + ".bak"
