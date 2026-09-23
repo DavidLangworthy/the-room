@@ -2,8 +2,8 @@
   /* ---- tokens: light is the base, both dark states redefine only these ---- */
   :root{
     --paper:#EFF1EC; --surface:#FAFBF8; --sunk:#E6E9E1;
-    --ink:#191C19; --ink-2:#4A5049; --ink-3:#7B8279; --rule:#D5D9CE;
-    --opus:#A85A22; --sol:#1C6B5C; --gemini:#3A5A99; --grok:#8A3A5E;
+    --ink:#191C19; --ink-2:#454B44; --ink-3:#646B62; --rule:#D5D9CE;
+    --opus:#8F4A18; --sol:#1C6B5C; --gemini:#3A5A99; --grok:#8A3A5E;
     --opus-wash:#F6EAE0; --sol-wash:#E2EFEB; --gemini-wash:#E5EAF5; --grok-wash:#F5E6EC;
     --brass:#6E6A3C; --focus:#1C6B5C;
     --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -13,7 +13,7 @@
   @media (prefers-color-scheme:dark){
     :root:not([data-theme="light"]){
       --paper:#14171A; --surface:#1B1F23; --sunk:#101316;
-      --ink:#E7EAE4; --ink-2:#A8AFA6; --ink-3:#757C75; --rule:#2C3238;
+      --ink:#E7EAE4; --ink-2:#AEB5AC; --ink-3:#8C938B; --rule:#2C3238;
       --opus:#E09550; --sol:#54B9A0; --gemini:#88A8E4; --grok:#D68BAD;
       --opus-wash:#2A2018; --sol-wash:#162925; --gemini-wash:#1A2130; --grok-wash:#2A1A22;
       --brass:#B5AE72; --focus:#54B9A0;
@@ -21,7 +21,7 @@
   }
   :root[data-theme="dark"]{
     --paper:#14171A; --surface:#1B1F23; --sunk:#101316;
-    --ink:#E7EAE4; --ink-2:#A8AFA6; --ink-3:#757C75; --rule:#2C3238;
+    --ink:#E7EAE4; --ink-2:#AEB5AC; --ink-3:#8C938B; --rule:#2C3238;
     --opus:#E09550; --sol:#54B9A0; --gemini:#88A8E4; --grok:#D68BAD;
     --opus-wash:#2A2018; --sol-wash:#162925; --gemini-wash:#1A2130; --grok-wash:#2A1A22;
     --brass:#B5AE72; --focus:#54B9A0;
@@ -237,9 +237,11 @@ body{min-height:100vh}
         transition:border-color .16s,opacity .16s}
 .member .dot{width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
 .member .vendor{color:var(--ink-3);font-size:11.5px}
-.member[aria-pressed="false"]{opacity:.42}
-.member[aria-pressed="false"] .dot{background:var(--ink-3)}
+.member[aria-pressed="false"]{color:var(--ink-3);background:transparent;
+                              text-decoration:line-through;text-decoration-thickness:1px}
+.member[aria-pressed="false"] .dot{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ink-3)}
 .member:hover{border-color:var(--c)}
+.team-note{font-size:12px;color:var(--ink-3);margin-left:5px}
 
 .controls{display:flex;align-items:center;justify-content:space-between;gap:16px;
           margin-top:30px;flex-wrap:wrap}
@@ -247,7 +249,7 @@ body{min-height:100vh}
 .seg{display:inline-flex;background:color-mix(in srgb,var(--ink) 9%,var(--paper));
      border-radius:999px;padding:3px;gap:2px}
 .seg-b{appearance:none;background:none;border:0;border-radius:999px;font:inherit;font-size:13px;
-       font-weight:500;color:var(--ink-3);padding:8px 16px;cursor:pointer;
+       font-weight:500;color:var(--ink-2);padding:8px 16px;cursor:pointer;
        display:inline-flex;align-items:baseline;gap:7px;transition:background .16s,color .16s}
 .seg-b em{font-style:normal;font-family:var(--mono);font-size:10.5px;opacity:.75}
 .seg-b[aria-checked="true"]{background:var(--surface);color:var(--ink);font-weight:620;

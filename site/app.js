@@ -92,9 +92,9 @@ const PROMPTS = {
     `and say the one thing you most want the room to take away. Short.`,
 };
 
-const synthPrompt = (question, all) =>
-  `You are the synthesizer for this run. Four models — Claude, GPT, Gemini and Grok — were ` +
-  `asked: "${question}"\n\nHere is the entire conversation, in order:\n\n${all}\n\nWrite the ` +
+const synthPrompt = (question, all, roster, absent) =>
+  `You are the synthesizer for this run. ${roster} were asked: "${question}"` +
+  (absent ? ` ${absent}` : '') + `\n\nHere is the entire conversation, in order:\n\n${all}\n\nWrite the ` +
   `strongest combined answer the room can support. Do not take a majority vote and do not ` +
   `average anyone into blandness. Say what they agreed on, what they disagreed on and why, what ` +
   `evidence would settle it, what one of them saw that the others missed, where confidence is ` +
@@ -190,23 +190,42 @@ function finish(meta, t0, text) {
   meta.latency = Math.round((performance.now() - t0) / 100) / 10;
   // A reply cut off at the ceiling is a partial failure. Silence — and half a thought —
   // must never read as a clean answer.
-  meta.ok = text.trim().length > 0 && meta.finish !== 'length' && !meta.error;
   if (text.trim() && meta.finish === 'length') meta.error = 'cut off at the token limit';
+  // No terminal signal means we do not know the answer is whole, so it is not one.
+  if (text.trim() && !meta.finish && !meta.error) meta.error = 'stream ended without a completion signal';
+  meta.ok = text.trim().length > 0 && meta.finish !== 'length' && !meta.error;
   return meta;
 }
 
 // ------------------------------------------------------------ rendering ----
 function esc(s) {
-  return s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  return s.replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/* Model text is attacker-influenced: a model is given web search, so a poisoned page it
+ * reads can dictate what it writes, citations included. Only absolute http(s) URLs are
+ * allowed to reach an href — javascript:, data: and vbscript: render as plain text. */
+function safeUrl(u) {
+  try {
+    const p = new URL(u).protocol;
+    return p === 'https:' || p === 'http:';
+  } catch (_) { return false; }
 }
 function fmt(t) {
   let h = esc(t);
   h = h.replace(/\[\[(\d+)\]\]\((\S+?)\)/g,
-    (_, n, u) => `<sup class="cite"><a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${n}</a></sup>`);
+    (_, n, u) => safeUrl(u)
+      ? `<sup class="cite"><a href="${u}" target="_blank" rel="noopener noreferrer">${n}</a></sup>`
+      : '');
   h = h.replace(/\(\[([^\]]+)\]\((\S+?)\)\)/g,
-    (_, l, u) => `<sup class="cite"><a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(l.replace(/^www\./, '').split('.')[0])}</a></sup>`);
+    (_, l, u) => safeUrl(u)
+      ? `<sup class="cite"><a href="${u}" target="_blank" rel="noopener noreferrer">${l.replace(/^www\./, '').split('.')[0]}</a></sup>`
+      : '');
   h = h.replace(/\[([^\]]+)\]\((\S+?)\)/g,
-    (_, l, u) => `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${l}</a>`);
+    (_, l, u) => safeUrl(u)
+      ? `<a href="${u}" target="_blank" rel="noopener noreferrer">${l}</a>`
+      : l);
   h = h.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   h = h.replace(/(^|[\s(])\*([^*\n]+)\*/g, '$1<em>$2</em>');
   return h.split(/\n{2,}/).filter(p => p.trim()).map(p => `<p>${p.replace(/\n/g, ' ')}</p>`).join('');
@@ -268,10 +287,11 @@ function paintLedger() {
   const r = state.run;
   const per = {}, tot = { turns: 0, tokens: 0, cost: 0, cites: 0 };
   for (const rd of r.rounds) for (const t of rd.turns) {
-    if (!t.meta.ok) continue;
     const p = per[t.seat] || (per[t.seat] = { tokens: 0, cost: 0, cites: 0, turns: 0 });
     const u = t.meta.usage || {};
-    p.turns++; tot.turns++;
+    // OpenRouter bills a truncated turn in full — the ledger counts the money either way,
+    // and only the turn count is restricted to answers Clock actually used.
+    if (t.meta.ok) { p.turns++; tot.turns++; }
     p.tokens += u.total_tokens || 0; tot.tokens += u.total_tokens || 0;
     p.cost += u.cost || 0;           tot.cost += u.cost || 0;
     p.cites += t.meta.citations.length; tot.cites += t.meta.citations.length;
@@ -308,6 +328,9 @@ async function runStage(stage, idx, question, prevRound) {
   // Every seat is launched before any of them returns. In the independent stage that is
   // also what makes independence real: there is nothing of anyone else's to include.
   const jobs = seats.map(seat => {
+    if (stage.key !== 'independent' && !othersBlock(prevRound, seat.id).trim()) {
+      return Promise.resolve();   // nobody left for this seat to answer
+    }
     const ui = turnEl(sec, seat);
     const mem = state.run.memory[seat.id] ||
       (state.run.memory[seat.id] = [{ role: 'system', content: systemBlind(state.run.date) }]);
@@ -315,9 +338,12 @@ async function runStage(stage, idx, question, prevRound) {
     if (stage.key !== 'independent') {
       mem[0] = { role: 'system', content: systemRoom(seat.label, state.run.date) };
     }
+    // A seat whose round-1 call failed has no assistant turn, and so has never been
+    // shown the question at all — restate it rather than ask it to critique in the dark.
+    const unseen = mem.length === 1 ? `The question put to the room was: ${question}\n\n` : '';
     const content = stage.key === 'independent'
       ? PROMPTS.independent(question)
-      : PROMPTS[stage.key](othersBlock(prevRound, seat.id));
+      : unseen + PROMPTS[stage.key](othersBlock(prevRound, seat.id));
     const send = mem.concat([{ role: 'user', content }]);
 
     return streamOne(seat.model, send, chunk => {
@@ -344,7 +370,7 @@ async function runStage(stage, idx, question, prevRound) {
   state.run.rounds.push(round);
 
   const ok = round.turns.filter(t => t.meta.ok).length;
-  if (ok < seats.length && !state.run.stopped) {
+  if (ok > 0 && ok < round.turns.length && !state.run.stopped) {
     const missing = round.turns.filter(t => !t.meta.ok).map(t => SEAT[t.seat].short);
     notice(`<b>${missing.join(' and ')} ${missing.length > 1 ? 'were' : 'was'} unavailable for this round.</b> ` +
            `Clock carried on with ${ok} participant${ok === 1 ? '' : 's'}.`, sec);
@@ -361,25 +387,45 @@ async function runSynthesis(question) {
       if (t.meta.ok && t.text.trim()) blocks.push(`--- ${SEAT[t.seat].label} ---\n${t.text.trim()}`);
     }
   }
+  const spoke = new Set(state.run.rounds.flatMap(r => r.turns.filter(t => t.meta.ok).map(t => t.seat)));
+  const names = [...spoke].map(id => SEAT[id].label);
+  const roster = names.length === 1 ? `One model, ${names[0]},`
+    : `${names.length} models — ${names.slice(0, -1).join(', ')} and ${names.slice(-1)} —`;
+  const missing = state.run.team.filter(id => !spoke.has(id)).map(id => SEAT[id].label);
+  const absent = missing.length
+    ? `${missing.join(' and ')} ${missing.length > 1 ? 'were' : 'was'} seated but produced no ` +
+      `usable answer in any round; do not attribute a position to ${missing.length > 1 ? 'them' : 'it'}.`
+    : '';
   const who = SEAT[state.team.includes(SYNTHESIZER) ? SYNTHESIZER : state.team[0]];
   $('synth-box').hidden = false;
-  $('synth-by').textContent =
-    `Synthesized by ${who.label} — deliberately not the model that wrote this page. The role is a flag, not a fixture.`;
+  $('synth-by').textContent = who.id === SYNTHESIZER
+    ? `Synthesized by ${who.label} — deliberately not the model that wrote this page. The role is a flag, not a fixture.`
+    : `Synthesized by ${who.label}, standing in because ${SEAT[SYNTHESIZER].short} is not seated.`;
   const body = $('synth-body');
   body.textContent = '';
   $('synth-box').classList.add('live');
 
   // Fresh context on purpose: the synthesizer reads the record, it does not carry its own side.
   const { text, meta } = await streamOne(who.model,
-    [{ role: 'user', content: synthPrompt(question, blocks.join('\n\n')) }],
+    [{ role: 'user', content: synthPrompt(question, blocks.join('\n\n'), roster, absent) }],
     c => { body.textContent += c; }, state.controller.signal);
 
   $('synth-box').classList.remove('live');
-  const conf = (text.match(/CONFIDENCE:\s*([\d.]+)/) || [])[1];
+  const conf = (text.match(/CONFIDENCE:\s*(\d*\.?\d+)/) || [])[1];
   const clean = text.replace(/\n*CONFIDENCE:\s*[\d.]+\s*$/, '');
-  body.innerHTML = clean.trim() ? fmt(clean) : `<p class="turn-status">The synthesizer did not finish — ${esc(meta.error || 'no answer')}</p>`;
-  if (conf) {
-    const v = Math.max(0, Math.min(1, parseFloat(conf)));
+  if (!meta.ok) {
+    body.innerHTML = (clean.trim() ? fmt(clean) : '') +
+      `<p class="turn-status">The synthesis did not finish — ${esc(meta.error || 'no answer')}. ` +
+      `What you see above, if anything, is partial.</p>`;
+    state.run.synthesis = '';                 // never downloaded as a finished answer
+    state.run.synthFailed = meta.error || 'no answer';
+    state.run.synthMeta = meta;
+    return;
+  }
+  body.innerHTML = fmt(clean);
+  const cv = conf === undefined ? NaN : parseFloat(conf);
+  if (Number.isFinite(cv)) {
+    const v = Math.max(0, Math.min(1, cv));
     $('conf-box').hidden = false;
     $('conf-fill').style.width = `${v * 100}%`;
     $('conf-num').textContent = v.toFixed(2);
@@ -393,7 +439,7 @@ async function runSynthesis(question) {
 async function run() {
   const question = $('question').value.trim();
   if (!question) { $('question').focus(); return; }
-  if (!state.key) { openKey('Add your key and Clock will get started.'); return; }
+  if (!state.key) { openKey('Add your key, then press Ask the room again.'); return; }
   if (!state.team.length) { return; }
 
   state.controller = new AbortController();
@@ -407,6 +453,7 @@ async function run() {
   $('ask-view').hidden = true;
   $('run-view').hidden = false;
   $('run-question').textContent = question;
+  $('run-question').focus();      // hiding the ask view drops focus to <body> otherwise
   $('rounds').textContent = '';
   $('synth-box').hidden = true;
   $('conf-box').hidden = true;
@@ -422,6 +469,11 @@ async function run() {
       const stage = STAGES.find(s => s.key === keys[i]);
       prev = await runStage(stage, i, question, prev);
       if (state.run.stopped) break;
+      if (prev.turns.filter(t => t.meta.ok).length < 2 && i + 1 < keys.length) {
+        notice('<b>Fewer than two models are still answering.</b> There is no room left to ' +
+               'argue with, so Clock went straight to the synthesis.');
+        break;
+      }
       if (!prev.turns.some(t => t.meta.ok)) {
         notice('<b>Every seat failed this round.</b> Clock stopped here rather than synthesizing nothing.');
         state.run.stopped = true;
@@ -433,10 +485,12 @@ async function run() {
       await runSynthesis(question);
     }
   } finally {
-    paintProgress(keys, state.run.stopped ? -1 : keys.length + 1);
+    paintProgress(keys, state.run.stopped ? state.run.rounds.length : keys.length + 1);
     $('stage-now').textContent = state.run.stopped ? 'stopped' : 'done';
     $('stop').disabled = true;
-    if (state.run.rounds.length) { paintLedger(); $('download').disabled = false; }
+    const anyOk = state.run.rounds.some(rd => rd.turns.some(t => t.meta.ok));
+    if (state.run.rounds.length) paintLedger();
+    $('download').disabled = !anyOk;
   }
 }
 
@@ -451,8 +505,14 @@ function buildDownload() {
   }
   const head =
     `<!doctype html><html lang="en"><head><meta charset="utf-8">` +
+    // The response headers that protect the live page do not follow the file to disk,
+    // so the saved transcript carries its own policy. It is inert by construction:
+    // no script may run, and nothing may be fetched.
+    `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; ` +
+    `style-src 'unsafe-inline'; img-src data:; form-action 'none'; base-uri 'none'">` +
+    `<meta name="referrer" content="no-referrer">` +
     `<meta name="viewport" content="width=device-width,initial-scale=1">` +
-    `<title>Clock — ${esc(r.question).slice(0, 70)}</title><style>${css}` +
+    `<title>Clock — ${esc(r.question.slice(0, 70))}</title><style>${css}` +
     `.turn.live .turn-body::after{display:none}@media print{.turn,.tp{break-inside:avoid}}` +
     `</style></head><body><div class="shell">`;
 
@@ -581,11 +641,28 @@ function init() {
   } catch (_) {}
   buildTeam();
 
-  document.querySelectorAll('.seg-b').forEach(btn => {
-    btn.addEventListener('click', () => {
-      state.mode = btn.dataset.mode;
-      document.querySelectorAll('.seg-b').forEach(b =>
-        b.setAttribute('aria-checked', String(b === btn)));
+  const segs = [...document.querySelectorAll('.seg-b')];
+  const pick = btn => {
+    state.mode = btn.dataset.mode;
+    segs.forEach(b => {
+      const on = b === btn;
+      b.setAttribute('aria-checked', String(on));
+      b.tabIndex = on ? 0 : -1;          // roving tabindex: one stop for the group
+    });
+  };
+  segs.forEach((btn, i) => {
+    btn.tabIndex = btn.getAttribute('aria-checked') === 'true' ? 0 : -1;
+    btn.addEventListener('click', () => pick(btn));
+    btn.addEventListener('keydown', e => {
+      const d = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[e.key];
+      let next = null;
+      if (d) next = segs[(i + d + segs.length) % segs.length];
+      else if (e.key === 'Home') next = segs[0];
+      else if (e.key === 'End') next = segs[segs.length - 1];
+      if (!next) return;
+      e.preventDefault();
+      pick(next);
+      next.focus();
     });
   });
 
@@ -602,10 +679,19 @@ function init() {
     $('stop').disabled = true;
   });
   $('restart').addEventListener('click', () => {
+    if (state.run) state.run.stopped = true;      // or the dead run records a phantom round
     if (state.controller) state.controller.abort();
     $('run-view').hidden = true;
     $('ask-view').hidden = false;
     $('question').focus();
+  });
+
+  $('clear-key').addEventListener('click', () => {
+    state.key = '';
+    state.remembered = false;
+    try { localStorage.removeItem(LS_KEY); } catch (_) {}
+    paintKey();
+    $('key-dialog').close('cleared');
   });
 
   $('key-dialog').addEventListener('close', () => {
