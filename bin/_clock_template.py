@@ -36,9 +36,9 @@ from datetime import datetime, timezone
 
 API = "https://openrouter.ai/api/v1/chat/completions"
 
-SEATS = {"opus": "anthropic/claude-opus-5", "sol": "openai/gpt-5.6-sol",
-         "gemini": "google/gemini-3.1-pro-preview", "grok": "x-ai/grok-4.6",
-         "meta": "meta/muse-spark-1.3"}
+SEATS = {"opus": "anthropic/claude-opus-5.5", "sol": "openai/gpt-6-astra",
+         "gemini": "google/gemini-4-argon", "grok": "x-ai/grok-4.7",
+         "meta": "meta/muse-wonder"}
 LABELS = {"opus": "Claude (Anthropic)", "sol": "GPT (OpenAI)",
           "gemini": "Gemini (Google)", "grok": "Grok (xAI)",
           "meta": "Muse (Meta)"}

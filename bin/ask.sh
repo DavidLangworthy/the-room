@@ -5,7 +5,7 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 Q=${1:?usage: ask.sh "<question>"}
 
-: "${SEATS:=opus=anthropic/claude-opus-5 sol=openai/gpt-5.6-sol gemini=google/gemini-3.1-pro-preview grok=x-ai/grok-4.6}"
+: "${SEATS:=opus=anthropic/claude-opus-5.5 sol=openai/gpt-6-astra gemini=google/gemini-4-argon grok=x-ai/grok-4.7 meta=meta/muse-wonder}"
 
 RUN_ID=$(date -u +%Y-%m-%dT%H%M%SZ)
 RUN_DIR="$ROOT/store/runs/$RUN_ID"

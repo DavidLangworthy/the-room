@@ -19,11 +19,11 @@ const LS_TEAM = 'clock.team';
 const MAX_TOKENS = 8000;
 
 const SEATS = [
-  { id: 'opus',   model: 'anthropic/claude-opus-5',        short: 'Claude', vendor: 'Anthropic', label: 'Claude (Anthropic)' },
-  { id: 'sol',    model: 'openai/gpt-5.6-sol',             short: 'GPT',    vendor: 'OpenAI',    label: 'GPT (OpenAI)' },
-  { id: 'gemini', model: 'google/gemini-3.1-pro-preview',  short: 'Gemini', vendor: 'Google',    label: 'Gemini (Google)' },
-  { id: 'grok',   model: 'x-ai/grok-4.6',                  short: 'Grok',   vendor: 'xAI',       label: 'Grok (xAI)' },
-  { id: 'meta',   model: 'meta/muse-spark-1.3',             short: 'Muse',   vendor: 'Meta',      label: 'Muse (Meta)' },
+  { id: 'opus',     model: 'anthropic/claude-opus-5.5', short: 'Claude', vendor: 'Anthropic', label: 'Claude (Anthropic)' },
+  { id: 'sol',      model: 'openai/gpt-6-astra',        short: 'GPT',    vendor: 'OpenAI',    label: 'GPT (OpenAI)' },
+  { id: 'gemini',   model: 'google/gemini-4-argon',     short: 'Gemini', vendor: 'Google',    label: 'Gemini (Google)' },
+  { id: 'grok',     model: 'x-ai/grok-4.7',             short: 'Grok',   vendor: 'xAI',       label: 'Grok (xAI)' },
+  { id: 'meta',     model: 'meta/muse-wonder',          short: 'Muse',   vendor: 'Meta',      label: 'Muse (Meta)' },
 ];
 const SEAT = Object.fromEntries(SEATS.map(s => [s.id, s]));
 const SYNTHESIZER = 'sol';   // deliberately not the model that wrote this page

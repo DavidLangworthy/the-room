@@ -14,9 +14,9 @@ import json, os, sys, subprocess, datetime, glob
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TODAY = datetime.date.today().strftime("%A %-d %B %Y")
 
-SEATS = {"opus": "anthropic/claude-opus-5", "sol": "openai/gpt-5.6-sol",
-         "gemini": "google/gemini-3.1-pro-preview", "grok": "x-ai/grok-4.6",
-         "meta": "meta/muse-spark-1.3"}
+SEATS = {"opus": "anthropic/claude-opus-5.5", "sol": "openai/gpt-6-astra",
+         "gemini": "google/gemini-4-argon", "grok": "x-ai/grok-4.7",
+         "meta": "meta/muse-wonder"}
 LABELS = {"opus": "Claude (Anthropic)", "sol": "GPT (OpenAI)",
           "gemini": "Gemini (Google)", "grok": "Grok (xAI)",
           "meta": "Muse (Meta)"}
