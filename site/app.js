@@ -141,12 +141,18 @@ async function streamOne(model, messages, onDelta, signal) {
         plugins: [{ id: 'web', max_results: 6 }],
       }),
     });
+    meta.http = res.status;
     if (!res.ok) {
       let detail = `HTTP ${res.status}`;
       try {
-        const j = JSON.parse(await res.text());
-        detail = (j.error && (j.error.message || j.error.code)) || detail;
-      } catch (_) { /* body was not JSON; the status is all we have */ }
+        const body = await res.text();
+        meta.errorBody = body.slice(0, 1500);
+        const j = JSON.parse(body);
+        if (j.error) {
+          detail = j.error.message || j.error.code || detail;
+          meta.errorDetail = j.error;          // .metadata carries the provider's own words
+        }
+      } catch (_) { /* not JSON; the status and raw body are all we have */ }
       meta.error = detail;
       return { text, meta: finish(meta, t0, text) };
     }
@@ -169,7 +175,12 @@ async function streamOne(model, messages, onDelta, signal) {
         if (payload === '[DONE]') continue;
         let chunk;
         try { chunk = JSON.parse(payload); } catch (_) { continue; }
-        if (chunk.error) { meta.error = chunk.error.message || 'stream error'; continue; }
+        if (chunk.error) {
+          meta.error = chunk.error.message || chunk.error.code || 'stream error';
+          meta.errorDetail = chunk.error;
+          meta.errorAfterChars = text.length;   // did it die mid-answer, or before starting?
+          continue;
+        }
         const ch = (chunk.choices || [])[0];
         if (ch) {
           const d = ch.delta || {};
@@ -384,7 +395,8 @@ async function runStage(stage, idx, question, prevRound) {
   if (ok > 0 && ok < round.turns.length && !state.run.stopped) {
     const missing = round.turns.filter(t => !t.meta.ok).map(t => SEAT[t.seat].short);
     notice(`<b>${missing.join(' and ')} ${missing.length > 1 ? 'were' : 'was'} unavailable for this round.</b> ` +
-           `The room carried on with ${ok} participant${ok === 1 ? '' : 's'}.`, sec);
+           `The room carried on with ${ok} participant${ok === 1 ? '' : 's'}. ` +
+           `<button class="linkish diag" type="button">Copy diagnostics</button>`, sec);
   }
   return round;
 }
@@ -485,7 +497,8 @@ async function run() {
         break;
       }
       if (!prev.turns.some(t => t.meta.ok)) {
-        notice('<b>Every seat failed this round.</b> The room stopped here rather than synthesizing nothing.');
+        notice('<b>Every seat failed this round.</b> The room stopped here rather than ' +
+               'synthesizing nothing. <button class="linkish diag" type="button">Copy diagnostics</button>');
         state.run.stopped = true;
         break;
       }
@@ -501,6 +514,71 @@ async function run() {
     const anyOk = state.run.rounds.some(rd => rd.turns.some(t => t.meta.ok));
     if (state.run.rounds.length) paintLedger();
     setDownloadable(anyOk);
+  }
+}
+
+// ---------------------------------------------------------- diagnostics ---
+/**
+ * A report for a failing seat, built here in the page. It carries no API key and
+ * no model output — only what the run was asked to do and what came back wrong.
+ */
+function diagnostics() {
+  const r = state.run;
+  const turn = (rd, t) => ({
+    round: rd.name,
+    seat: t.seat,
+    model: SEAT[t.seat] ? SEAT[t.seat].model : t.seat,
+    ok: t.meta.ok,
+    http: t.meta.http ?? null,
+    finish_reason: t.meta.finish ?? null,
+    provider: t.meta.provider ?? null,
+    model_served: t.meta.served ?? null,
+    latency_s: t.meta.latency ?? null,
+    answer_chars: (t.text || '').length,
+    chars_before_error: t.meta.errorAfterChars ?? null,
+    usage: t.meta.usage || null,
+    error: t.meta.error || null,
+    error_detail: t.meta.errorDetail || null,
+    error_body: t.meta.errorBody || null,
+  });
+  return {
+    what: 'Room of Models diagnostics. No API key and no model text are included.',
+    when: new Date().toISOString(),
+    page: location.origin + location.pathname,
+    user_agent: navigator.userAgent,
+    run: {
+      mode: r.mode,
+      team: r.team,
+      question_chars: r.question.length,
+      rounds_completed: r.rounds.length,
+      stopped: !!r.stopped,
+    },
+    seats: SEATS.filter(s => r.team.includes(s.id)).map(s => ({ id: s.id, model: s.model })),
+    turns: r.rounds.flatMap(rd => rd.turns.map(t => turn(rd, t))),
+    synthesis: r.synthMeta ? {
+      model: SEAT[SYNTHESIZER] && SEAT[SYNTHESIZER].model,
+      ok: r.synthMeta.ok, http: r.synthMeta.http ?? null,
+      finish_reason: r.synthMeta.finish ?? null,
+      error: r.synthMeta.error || null,
+      error_detail: r.synthMeta.errorDetail || null,
+    } : null,
+  };
+}
+
+async function copyDiagnostics(btn) {
+  const text = JSON.stringify(diagnostics(), null, 2);
+  const say = m => { btn.textContent = m; setTimeout(() => { btn.textContent = 'Copy diagnostics'; }, 2400); };
+  try {
+    await navigator.clipboard.writeText(text);
+    say('Copied — paste it into the bug report');
+  } catch (_) {
+    // clipboard can be refused (permissions, insecure context); fall back to a file
+    const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url; a.download = 'room-of-models-diagnostics.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    say('Saved as a file');
   }
 }
 
@@ -697,6 +775,12 @@ function init() {
   $('open-privacy').addEventListener('click', () => $('privacy-dialog').showModal());
   document.querySelectorAll('[data-download]').forEach(b =>
     b.addEventListener('click', download));
+
+  // Notices are created mid-run, so their buttons are handled by delegation.
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.diag');
+    if (b && state.run) copyDiagnostics(b);
+  });
   $('stop').addEventListener('click', () => {
     if (state.run) state.run.stopped = true;
     if (state.controller) state.controller.abort();

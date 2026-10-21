@@ -182,8 +182,9 @@ to critique answers to a question it had never been shown.
 
 Working and deployed. Known gaps:
 
-- Meta's Muse intermittently fails mid-stream for some accounts; diagnostics to capture the
-  upstream error are the next piece of work
+- Meta's Muse intermittently fails mid-stream for some accounts. A failing seat now offers
+  **Copy diagnostics**, which captures the provider's own error text rather than OpenRouter's
+  generic wrapper; the underlying cause is still open
 - no test coverage beyond the injection suite
 
 ---
