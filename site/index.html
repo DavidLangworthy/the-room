@@ -136,6 +136,30 @@
       </figcaption>
     </figure>
 
+    <h2 class="how-h2">Who is in the room</h2>
+    <p class="how-note">Each vendor's current flagship. You can unseat any of them before you
+      ask — the room adapts, and the prompts count the models actually seated rather than
+      assuming five.</p>
+    <div class="roster-wrap">
+      <table class="roster">
+        <thead><tr><th>Seat</th><th>Model</th><th>Chosen because</th></tr></thead>
+        <tbody>
+          <tr class="seat-opus"><th scope="row"><span class="dot"></span>Claude <em>Anthropic</em></th>
+            <td><code>claude-opus-5.5</code></td><td>Highest aggregate reasoning score of the five.</td></tr>
+          <tr class="seat-sol"><th scope="row"><span class="dot"></span>GPT <em>OpenAI</em></th>
+            <td><code>gpt-6-astra</code></td><td>The GPT-6 flagship. Also writes the synthesis.</td></tr>
+          <tr class="seat-gemini"><th scope="row"><span class="dot"></span>Gemini <em>Google</em></th>
+            <td><code>gemini-4-argon</code></td><td>Google's flagship reasoning model.</td></tr>
+          <tr class="seat-grok"><th scope="row"><span class="dot"></span>Grok <em>xAI</em></th>
+            <td><code>grok-4.7</code></td><td>Searches hardest of the five in practice.</td></tr>
+          <tr class="seat-meta"><th scope="row"><span class="dot"></span>Muse <em>Meta</em></th>
+            <td><code>muse-wonder</code></td><td>Weakest on aggregate, but beats the rest on some
+              reasoning tasks by a wide margin — a room wants that.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="how-h2">What the room guarantees</h2>
     <dl class="claims how-claims">
       <dt>Round one is blind.</dt>
       <dd>No model is told that anyone else is answering, or who. Not merely kept from the
@@ -156,6 +180,13 @@
       <dd>A rate limit or an outage costs you that seat for that round, not the run — the room says
         who was missing and carries on with the rest. If fewer than two models are still
         answering there is nothing left to argue with, so it goes straight to the synthesis.</dd>
+
+      <dt>When something breaks, you can hand over the evidence.</dt>
+      <dd>A failed seat offers <strong>Copy diagnostics</strong>: the request shape, the HTTP
+        status, the finish reason, and the provider's own error text — including whether the
+        stream died before the model started or part-way through an answer. It is built here in
+        the page and copied to your clipboard. It contains no API key and none of the model
+        text.</dd>
 
       <dt>The synthesizer reads the record, not its own side.</dt>
       <dd>It gets fresh context and the whole transcript, and is told not to take a majority vote
